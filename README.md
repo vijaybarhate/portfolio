@@ -1,70 +1,65 @@
-# Welcome to Streamlit `links page`
+# My Portfolio Website - Overview 🚀
 
-<img src="streamlit-links-page.png" width="350">
+This repository contains the open-source version of my personal portfolio website.  
+Feel free to explore the code and use it for learning and inspiration.
 
+---
 
-> A Streamlit app that you can build for free to store all your personal links that is similar in functionality to that of [Linktr.ee](https://linktr.ee/).
+## ⚠️ Usage Notice
 
-<img src="23F54497-245E-413F-99C7-F3E295E4EA13.png" width="350">
+This project is shared for learning purposes only.
 
-# Demo app
+Please do NOT:
+- Clone or replicate the full website or design
+- Repost it with minor content changes
+- Use this project for commercial/client work
+- Create tutorials or content using this exact project
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://chanin.streamlitapp.com/)
+If you use parts of the code, you must provide proper credit linking back to the original repository.
 
-# Setting up
+Build your own version — don’t just copy.
 
-Getting your own Streamlit `links page` up and running is really easy, just follow the following 3 steps:
+— Moncy Yohannan
 
-**Step 1**. [Click here](https://github.com/dataprofessor/links/generate) to generate a copy of this repository. Next, name your new repository to anything you'd like except for `your username`.github.io
+---
 
-**Step 2**. Customize the contents of the newly generated `links page` by editing the `streamlit_app.py` file:
+## 🛠️ Instructions
 
-```python
-import streamlit as st
-from st_functions import st_button, load_css
-from PIL import Image
+I have modified the GSAP Club plugins using trial versions.  
+⚠️ Note: Trial plugins cannot be used for production or hosting.
 
-load_css()
+For official GSAP Club plugins, refer here:  
+https://gsap.com/docs/v3/Installation/
 
-col1, col2, col3 = st.columns(3)
-col2.image(Image.open('dp.png'))
+---
 
-st.header('Chanin Nantasenamat, Ph.D.')
+## ⚙️ Tech Stack
 
-st.info('Developer Advocate, Content Creator and ex-Professor with an interest in Data Science and Bioinformatics')
+React • TypeScript • GSAP • Three.js • WebGL • HTML • CSS • JavaScript
 
-icon_size = 20
+---
 
-st_button('youtube', 'https://youtube.com/dataprofessor', 'Data Professor YouTube channel', icon_size)
-st_button('youtube', 'https://youtube.com/codingprofessor', 'Coding Professor YouTube channel', icon_size)
-st_button('medium', 'https://data-professor.medium.com/', 'Read my Blogs', icon_size)
-st_button('twitter', 'https://twitter.com/thedataprof/', 'Follow me on Twitter', icon_size)
-st_button('linkedin', 'https://www.linkedin.com/in/chanin-nantasenamat/', 'Follow me on LinkedIn', icon_size)
-st_button('newsletter', 'https://sendfox.com/dataprofessor/', 'Sign up for my Newsletter', icon_size)
-st_button('cup', 'https://www.buymeacoffee.com/dataprofessor/', 'Buy me a Coffee', icon_size)
-```
+## 🎨 Assets Usage
 
-There are 3 key information that you can modify:
-1. `st.header(A)` is used for specifying your name in place of **A**.
-Example:
-```python
-st.header('Chanin Nantasenamat, Ph.D.')
-```
+Some 3D assets included in this repository are free to use for learning purposes.
 
-2. `st.info(B)` is used for speciying a quick description about who you are, what you do, etc. in place of **B**.
-Example:
-```python
-st.info('Developer Advocate, Content Creator and ex-Professor with an interest in Data Science and Bioinformatics')
-```
+However:
 
-3. `st.button(D, E, F, G)` is a custom function for creating link buttons where **D** represents the icon to display (use `youtube` if the play button is to be displayed), **E** represents the URL, **F** represents the message to display on the clickable button and **G** represents the icon size.
-Example:
-```python
-st_button('youtube', 'https://youtube.com/dataprofessor', 'Data Professor YouTube channel', icon_size)
-```
+- The original 3D avatar used on my live portfolio is NOT included in this repository
+- That avatar is a custom asset created over ~1 month
+- It is not open source and not available for reuse
 
-**Step 3**. Deploy to [Streamlit Cloud](https://streamlit.io/cloud). Log-in and click on the **New app** button. Choose the newly generated repo from Steps 1-2. Finally click on the **Deploy!** button. 
+Any usage, extraction, or redistribution of that avatar from my live website is strictly prohibited.
 
-After a few moments your new `links page` should be accessible at `https://share.streamlit.io/{your-username}/{newly-created-repo}`
+---
 
-In an upcoming release of Streamlit Cloud, you will be able to customize the URL address to `https://{custom-name--here}.streamlitapp.com/` such as the one that I've created at https://chanin.streamlitapp.com/
+![Protfolio-Preview](https://github.com/user-attachments/assets/3c4557e7-6392-4928-b8a9-7b2476ef4edd)
+
+---
+
+## 📄 License
+
+This project is licensed under the Personal Portfolio License (PPL) v1.0.
+
+See the LICENSE file for full details
+
