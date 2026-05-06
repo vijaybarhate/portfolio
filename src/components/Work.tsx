@@ -53,21 +53,48 @@ const Work = () => {
           My <span>Work</span>
         </h2>
         <div className="work-flex">
-          {[...Array(6)].map((_value, index) => (
+          {[
+            {
+              title: "Student Result Analyzer",
+              category: "Data Analysis",
+              tools: "Python, Pandas, Matplotlib, Seaborn",
+              github: "https://github.com/vijaybarhate/student-result-analyzer"
+            },
+            {
+              title: "Expense Tracker with SQL",
+              category: "CLI Application",
+              tools: "Python, MySQL",
+              github: "https://github.com/vijaybarhate/expense-tracker-sql"
+            },
+            {
+              title: "School Fee Management System",
+              category: "CLI Application",
+              tools: "Python, MySQL, Tabulate, Pyfiglet",
+              github: "https://github.com/vijaybarhate/School-Fee-Management"
+            },
+            {
+              title: "Jamify Music Player",
+              category: "Web Application",
+              tools: "HTML5, CSS3, JavaScript",
+              github: "https://github.com/vijaybarhate/Jamify-Music-Player"
+            }
+          ].map((project, index) => (
             <div className="work-box" key={index}>
               <div className="work-info">
                 <div className="work-title">
                   <h3>0{index + 1}</h3>
 
                   <div>
-                    <h4>Project Name</h4>
-                    <p>Category</p>
+                    <h4>{project.title}</h4>
+                    <p>{project.category}</p>
                   </div>
                 </div>
                 <h4>Tools and features</h4>
-                <p>Javascript, TypeScript, React, Threejs</p>
+                <p>{project.tools}</p>
               </div>
-              <WorkImage image="/images/placeholder.webp" alt="" />
+              <a href={project.github} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <WorkImage image="/images/placeholder.webp" alt={project.title} />
+              </a>
             </div>
           ))}
         </div>
