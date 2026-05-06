@@ -1,24 +1,25 @@
-import { lazy, Suspense } from "react";
-import "./App.css";
+import { Navbar } from './components/layout/Navbar';
+import { Hero } from './components/sections/Hero';
+import { About } from './components/sections/About';
+import { Skills } from './components/sections/Skills';
+import { Projects } from './components/sections/Projects';
+import { Certifications } from './components/sections/Certifications';
+import { Contact } from './components/sections/Contact';
 
-const CharacterModel = lazy(() => import("./components/Character"));
-const MainContainer = lazy(() => import("./components/MainContainer"));
-import { LoadingProvider } from "./context/LoadingProvider";
-
-const App = () => {
+function App() {
   return (
-    <>
-      <LoadingProvider>
-        <Suspense>
-          <MainContainer>
-            <Suspense>
-              <CharacterModel />
-            </Suspense>
-          </MainContainer>
-        </Suspense>
-      </LoadingProvider>
-    </>
+    <div className="bg-background text-text min-h-screen selection:bg-accent/30 selection:text-accent">
+      <Navbar />
+      <main>
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Certifications />
+        <Contact />
+      </main>
+    </div>
   );
-};
+}
 
 export default App;
