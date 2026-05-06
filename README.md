@@ -2,7 +2,7 @@
 
 A modern, high-performance personal portfolio website built with **React**, **Three.js**, **GSAP**, and **Tailwind CSS**. This project features smooth 3D interactions, scroll-triggered animations, and a responsive design focused on delivering a premium user experience.
 
-![Portfolio Preview](https://github.com/user-attachments/assets/3c4557e7-6392-4928-b8a9-7b2476ef4edd)
+![Portfolio Preview](<img width="1423" height="904" alt="image" src="https://github.com/user-attachments/assets/f3500b4b-6b46-4af2-9d7d-f9e3b201e975" />)
 
 ---
 
