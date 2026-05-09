@@ -7,17 +7,18 @@ function cn(...inputs: ClassValue[]) {
 }
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'fab';
   size?: 'sm' | 'md' | 'lg';
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
     const variants = {
-      primary: 'bg-accent text-background hover:bg-accent/90 shadow-[0_0_15px_rgba(56,189,248,0.3)]',
-      secondary: 'bg-accent-secondary text-white hover:bg-accent-secondary/90 shadow-[0_0_15px_rgba(139,92,246,0.3)]',
-      outline: 'border-2 border-border bg-transparent hover:border-accent hover:text-accent',
-      ghost: 'bg-transparent hover:bg-surface/50 text-text-muted hover:text-text',
+      primary: 'bg-cyan/45 text-white hover:bg-cyan/65 active:bg-cyan/30 shadow-none hover:shadow-[0_0_20px_rgba(0,237,255,0.15)] border border-white/10',
+      secondary: 'bg-magenta text-white hover:bg-magenta/90 shadow-[0_0_15px_rgba(204,51,102,0.3)]',
+      outline: 'border border-border bg-transparent hover:border-magenta hover:text-magenta text-white',
+      ghost: 'bg-transparent hover:bg-surface text-text-muted hover:text-white',
+      fab: 'bg-cyan/45 text-white hover:bg-cyan/65 active:bg-cyan/30 rounded-full w-[52px] h-[52px] border border-white/10',
     };
 
     const sizes = {
@@ -30,9 +31,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center rounded-full font-medium transition-all duration-300 active:scale-95 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+          'inline-flex items-center justify-center font-ui transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-full',
+          variant === 'fab' ? '' : sizes[size],
           variants[variant],
-          sizes[size],
           className
         )}
         {...props}

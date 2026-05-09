@@ -1,16 +1,47 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0B0F19;
-  --color-surface: #111827;
-  --color-accent: #38BDF8;
-  --color-accent-secondary: #8B5CF6;
-  --color-text: #F9FAFB;
-  --color-text-muted: #9CA3AF;
-  --color-border: #1F2937;
+  /* Aeruk Color Palette - Dark Mode */
+  /* Primary Accents */
+  --color-magenta: #CC3366;
+  --color-magenta-light: #E85A8A;
+  --color-cyan: #00EDFF;
+  --color-cyan-light: #C5F8FF;
+  --color-cyan-secondary: #00DEFF;
+  --color-teal: #066AAB;
 
-  --font-display: "Space Grotesk", sans-serif;
-  --font-body: "Inter", sans-serif;
+  /* Backgrounds - Dark Mode Base */
+  --color-background: #000000;
+  --color-surface: #1D1D1D;
+  --color-surface-light: #262626;
+  --color-surface-dark-soft: #1D1D1D;
+
+  /* Text Colors - Dark Mode */
+  --color-text: #FFFFFF;
+  --color-text-dark: #FFFFFF;
+  --color-text-secondary: #C5C5C5;
+  --color-text-muted: #ABB8C3;
+  --color-text-light: #FFFFFF;
+
+  /* Borders - Dark Mode */
+  --color-border: #333333;
+  --color-border-secondary: #404040;
+  --color-border-light: rgba(255, 255, 255, 0.19);
+
+  /* Semantic */
+  --color-error: #CF2E2E;
+  --color-warning: #FCB900;
+
+  /* Typography */
+  --font-display: "Space Grotesk", "Rokkitt", sans-serif;
+  --font-body: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+
+  /* Shadows - Aeruk 4-level elevation */
+  --shadow-raised: 0px 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0px 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-floating: 0px 8px 32px rgba(0, 0, 0, 0.20);
+  --shadow-maximum: 0px 12px 48px rgba(0, 0, 0, 0.30);
 }
 
 @layer base {
@@ -24,20 +55,179 @@
 }
 
 @layer components {
+  /* Card Styles - Dark Mode */
+  .card {
+    @apply bg-surface border border-border rounded-[15px] p-6 mb-4;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .card:hover {
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .card-dark {
+    @apply bg-black/90 border border-white/10 rounded-[15px] p-6;
+    box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.50);
+  }
+
+  /* Image Container */
+  .image-container {
+    @apply rounded-[25px] overflow-hidden;
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Primary CTA - Circular FAB */
+  .btn-primary {
+    @apply bg-cyan/45 text-white font-ui text-base rounded-full;
+    width: 52px;
+    height: 52px;
+    border: 1px solid rgba(255, 255, 255, 0.19);
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-primary:hover {
+    @apply bg-cyan/65;
+    transform: scale(1.05);
+  }
+
+  .btn-primary:active {
+    @apply bg-cyan/30;
+    transform: scale(0.98);
+  }
+
+  /* Secondary CTA - Outline */
+  .btn-secondary {
+    @apply bg-transparent text-magenta font-ui text-base rounded-[3px];
+    border: none;
+    line-height: 24px;
+  }
+
+  .btn-secondary:hover {
+    text-decoration: underline;
+    @apply opacity-100;
+  }
+
+  .btn-secondary:focus {
+    outline: 2px solid #CC3366;
+    outline-offset: 2px;
+  }
+
+  /* Navigation Button - Light Background */
+  .btn-nav-light {
+    @apply bg-transparent text-white font-display text-sm rounded-full;
+    height: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.19);
+    line-height: 24px;
+  }
+
+  .btn-nav-light:hover {
+    @apply bg-white/12;
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+
+  .btn-nav-light:active {
+    @apply bg-white/20;
+  }
+
+  /* Navigation Button - Dark Background */
+  .btn-nav-dark {
+    @apply bg-transparent text-white font-display text-sm rounded-full px-2;
+    height: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.19);
+    line-height: 24px;
+  }
+
+  .btn-nav-dark:hover {
+    @apply bg-white/12;
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+
+  .btn-nav-dark:active {
+    @apply bg-white/20;
+  }
+
+  /* Form Inputs - Dark Mode */
+  .input-field {
+    @apply bg-surface border border-border rounded-full px-5 py-3 font-display text-sm text-white;
+    height: 42px;
+    line-height: 24px;
+  }
+
+  .input-field::placeholder {
+    @apply text-text-muted;
+  }
+
+  .input-field:focus {
+    @apply border-cyan outline-none;
+    box-shadow: 0px 0px 0px 3px rgba(0, 237, 255, 0.10);
+  }
+
+  .input-field.error {
+    @apply border-error;
+    box-shadow: 0px 0px 0px 3px rgba(207, 46, 46, 0.10);
+  }
+
+  /* Links - Dark Mode */
+  .link-cyan {
+    @apply text-cyan-secondary font-display text-sm no-underline;
+  }
+
+  .link-cyan:hover {
+    @apply underline text-cyan;
+  }
+
+  .link-cyan:focus {
+    outline: 2px solid #00DEFF;
+    outline-offset: 2px;
+  }
+
+  .link-magenta {
+    @apply text-magenta font-display text-sm no-underline;
+  }
+
+  .link-magenta:hover {
+    @apply opacity-75 underline;
+  }
+
+  .link-magenta:active {
+    @apply opacity-60;
+  }
+
+  /* Social Icon */
+  .social-icon {
+    @apply border border-white/20 rounded-full p-3;
+    border-radius: 50%;
+  }
+
+  .social-icon:hover {
+    @apply bg-magenta border-magenta;
+  }
+
+  .social-icon:hover svg {
+    @apply text-white;
+  }
+
+  /* Glass Effect - Dark Mode */
   .glass {
     @apply bg-surface/60 backdrop-blur-lg border border-border;
   }
 
-  .accent-gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#38BDF8] to-[#8B5CF6];
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-magenta to-cyan;
   }
 
+  /* Glow Effects */
   .glow-cyan {
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+    box-shadow: 0 0 20px rgba(0, 237, 255, 0.15);
   }
 
-  .glow-purple {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+  .glow-magenta {
+    box-shadow: 0 0 20px rgba(204, 51, 102, 0.15);
   }
 }
 
@@ -45,7 +235,7 @@
   scroll-behavior: smooth;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Dark Mode */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -55,5 +245,81 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-border rounded-full hover:bg-accent/50 transition-colors;
+  @apply bg-border rounded-full hover:bg-cyan/50 transition-colors;
+}
+
+/* Section Spacing - Aeruk System */
+.section-padding {
+  @apply py-24 px-6;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    @apply py-14 px-5;
+  }
+}
+
+@media (min-width: 1200px) {
+  .section-padding {
+    @apply py-24 px-6;
+  }
+}
+
+/* Section Variants - Dark */
+.section-dark {
+  @apply bg-surface-dark-soft text-text-light;
+}
+
+.section-dark .card {
+  @apply bg-surface border-border;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.section-dark input,
+.section-dark textarea {
+  @apply bg-surface border-border text-white;
+}
+
+.section-dark input::placeholder,
+.section-dark textarea::placeholder {
+  @apply text-text-muted;
+}
+
+/* Card hover effect for dark mode */
+.card-dark-hover:hover {
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Surface variants */
+.surface-elevated {
+  @apply bg-surface-light;
+}
+
+/* Navbar glass for dark mode */
+.navbar-glass {
+  @apply bg-black/80 backdrop-blur-lg border-b border-border;
+}
+
+/* Form focus states - Dark */
+.form-input-dark {
+  @apply bg-surface border-border text-white transition-all duration-300;
+}
+
+.form-input-dark:focus {
+  @apply border-cyan outline-none;
+  box-shadow: 0px 0px 0px 3px rgba(0, 237, 255, 0.15);
+}
+
+/* Text hierarchy - Dark mode */
+.text-primary-dark {
+  @apply text-white;
+}
+
+.text-secondary-dark {
+  @apply text-text-secondary;
+}
+
+.text-muted-dark {
+  @apply text-text-muted;
 }

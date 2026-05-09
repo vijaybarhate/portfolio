@@ -8,7 +8,7 @@ import { Contact } from './components/sections/Contact';
 
 function App() {
   return (
-    <div className="bg-background text-text min-h-screen selection:bg-accent/30 selection:text-accent">
+    <div className="bg-background text-text min-h-screen selection:bg-cyan/30 selection:text-magenta">
       <Navbar />
       <main>
         <Hero />

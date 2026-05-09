@@ -25,8 +25,8 @@ export const Section: React.FC<SectionProps> = ({
   containerClassName,
 }) => {
   return (
-    <section id={id} className={cn('py-20 md:py-32 overflow-hidden', className)}>
-      <div className={cn('container mx-auto px-6', containerClassName)}>
+    <section id={id} className={cn('py-24 md:py-14 lg:py-24 overflow-hidden', className)}>
+      <div className={cn('max-w-[1440px] mx-auto px-6', containerClassName)}>
         {(title || subtitle) && (
           <div className="mb-12 md:mb-20 max-w-3xl">
             {subtitle && (
@@ -34,7 +34,7 @@ export const Section: React.FC<SectionProps> = ({
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-accent text-xs font-bold uppercase tracking-[0.3em] block mb-4"
+                className="text-magenta text-xs font-bold uppercase tracking-[0.3em] block mb-4"
               >
                 {subtitle}
               </motion.span>
@@ -45,7 +45,7 @@ export const Section: React.FC<SectionProps> = ({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
+                className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight text-white"
               >
                 {title}
               </motion.h2>

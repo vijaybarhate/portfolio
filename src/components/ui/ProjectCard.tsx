@@ -16,38 +16,38 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       viewport={{ once: true }}
-      className="glass rounded-3xl p-6 md:p-8 hover:border-accent/50 transition-colors group relative overflow-hidden"
+      className="card rounded-[15px] p-6 md:p-8 hover:border-magenta/50 transition-all duration-300 group relative overflow-hidden"
     >
       <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
         <Github size={80} />
       </div>
-      
+
       <div className="relative z-10">
         <div className="flex flex-wrap gap-2 mb-4">
           {project.stack.map((tech) => (
             <span
               key={tech}
-              className="px-3 py-1 text-[10px] uppercase tracking-wider font-semibold rounded-full bg-accent/10 text-accent border border-accent/20"
+              className="px-3 py-1 text-[10px] uppercase tracking-wider font-semibold rounded-full bg-cyan/10 text-magenta border border-magenta/20"
             >
               {tech}
             </span>
           ))}
         </div>
 
-        <h3 className="text-2xl font-bold mb-3 group-hover:text-accent transition-colors">
+        <h3 className="text-2xl font-display font-bold mb-3 text-white group-hover:text-magenta transition-colors">
           {project.title}
         </h3>
-        
+
         <p className="text-text-muted text-sm mb-6 leading-relaxed">
           {project.longDescription || project.description}
         </p>
 
         <div className="space-y-3 mb-8">
-          <h4 className="text-xs uppercase tracking-[0.2em] text-accent/80 font-bold">Key Features</h4>
+          <h4 className="text-xs uppercase tracking-[0.2em] text-magenta/80 font-bold">Key Features</h4>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
             {project.features.map((feature, i) => (
-              <li key={i} className="flex items-center gap-2 text-xs text-text/80">
-                <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+              <li key={i} className="flex items-center gap-2 text-xs text-text-secondary">
+                <span className="w-1.5 h-1.5 rounded-full bg-magenta" />
                 {feature}
               </li>
             ))}

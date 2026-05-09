@@ -26,40 +26,40 @@ export const Navbar: React.FC = () => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4 ${
-        isScrolled ? 'bg-background/80 backdrop-blur-md border-b border-border py-3' : 'bg-transparent'
+        isScrolled ? 'navbar-glass py-3' : 'bg-transparent'
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between">
+      <div className="max-w-[1440px] mx-auto flex items-center justify-between">
         <motion.a
           href="#"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="text-xl font-bold tracking-tighter"
+          className="text-xl font-bold tracking-tight font-display text-white"
         >
-          Vijay <span className="text-accent">Barhate</span>
+          Vijay <span className="text-magenta">Barhate</span>
         </motion.a>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
-          <ul className="flex items-center gap-6">
+          <ul className="flex items-center gap-8">
             {navLinks.map((link) => (
               <li key={link.name}>
                 <a
                   href={link.href}
-                  className="text-sm font-medium text-text-muted hover:text-accent transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-md px-1"
+                  className="text-sm font-body text-text-muted hover:text-magenta transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded px-1"
                 >
                   {link.name}
                 </a>
               </li>
             ))}
           </ul>
-          <a 
-            href="/resume/Resume.pdf" 
+          <a
+            href="/portfolio/resume/Resume.pdf"
             download="Vijay_Barhate_Resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button variant="outline" size="sm" className="gap-2 cursor-pointer">
+            <Button variant="outline" size="sm" className="gap-2 cursor-pointer text-magenta border-magenta hover:bg-magenta/10">
               <Download size={14} />
               Resume
             </Button>
@@ -68,7 +68,7 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden text-text"
+          className="md:hidden text-white"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X /> : <Menu />}
@@ -90,15 +90,15 @@ export const Navbar: React.FC = () => {
                   <a
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-lg font-medium text-text-muted hover:text-accent transition-colors block"
+                    className="text-base font-body text-text-muted hover:text-magenta transition-colors block py-2"
                   >
                     {link.name}
                   </a>
                 </li>
               ))}
-              <li>
-                <a 
-                  href="/resume/Resume.pdf" 
+              <li className="pt-2">
+                <a
+                  href="/portfolio/resume/Resume.pdf"
                   download="Vijay_Barhate_Resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"

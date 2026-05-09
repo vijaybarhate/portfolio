@@ -12,21 +12,23 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: "jamify",
-    title: "Jamify Music Player",
-    description: "A modern web-based music player with dark mode UI and YouTube integration.",
-    longDescription: "Designed a web-based music player with dark mode UI, favorites system, recent searches, track info display, and YouTube link integration.",
-    stack: ["HTML5", "CSS3", "JavaScript"],
+    id: "sonivio",
+    title: "SONIVIO Music Player",
+    description: "A modern, futuristic music streaming web app using YouTube Data API v3 with glassmorphism design.",
+    longDescription: "SONIVIO is a modern, fast, and beautiful music streaming web app that uses the YouTube Data API v3 to search and play music. Built with React, TypeScript, and Tailwind CSS, it focuses on smooth animations, responsive design, and excellent performance.",
+    stack: ["React", "TypeScript", "Tailwind CSS", "Zustand", "Framer Motion", "Axios"],
     features: [
-      "Dark Mode Interface",
-      "Favorites System",
-      "Recent Searches",
-      "Track Info Display",
-      "YouTube Integration",
-      "Responsive Design"
+      "YouTube API Integration",
+      "Search & Stream Music",
+      "Persistent Playback Queue",
+      "Play/Pause/Skip Controls",
+      "Volume & Seek Bar",
+      "Smooth Animations",
+      "Glassmorphism Design",
+      "Mobile Responsive"
     ],
-    githubUrl: "https://github.com/vijaybarhate/Jamify-Music-Player", // Placeholder, adjust if needed
-    liveUrl: "#"
+    githubUrl: "https://github.com/vijaybarhate/SONIVIO-Music-Player",
+    liveUrl: "https://vijaybarhate.github.io/SONIVIO-Music-Player/"
   },
   {
     id: "expense-tracker",
