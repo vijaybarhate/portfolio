@@ -1,104 +1,105 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Section } from '../layout/Section';
-import { Button } from '../ui/Button';
-import { Mail, Linkedin, Send, MapPin } from 'lucide-react';
+import React, { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import gsap from "gsap";
 
-export const Contact: React.FC = () => {
+const Contact: React.FC = () => {
+  const marqueeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.to(".marquee-content", {
+        xPercent: -50,
+        duration: 40,
+        ease: "none",
+        repeat: -1,
+      });
+    }, marqueeRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <Section id="contact" title="Let's Connect" subtitle="Contact & Collaboration">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-        <div>
-          <p className="text-text-muted text-lg mb-10 leading-relaxed">
-            I am currently open to <span className="text-magenta font-medium">internships, collaborations</span>,
-            and opportunities related to software development, Python development, and data analysis.
-          </p>
+    <section id="contact" className="bg-bg pt-24 pb-12 px-6 overflow-hidden relative">
+      {/* Background Gradient */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(137,170,204,0.05),transparent_70%)] opacity-50" />
+      </div>
 
-          <div className="space-y-6">
-            <div className="flex items-center gap-4 group">
-              <div className="w-12 h-12 rounded-2xl bg-surface border border-border flex items-center justify-center group-hover:bg-magenta group-hover:text-white transition-all duration-300">
-                <Mail size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-text-muted uppercase tracking-widest mb-1">Email</p>
-                <a href="mailto:barhatevinay7777@gmail.com" className="text-lg font-display font-bold hover:text-magenta transition-colors text-white">
-                  barhatevinay7777@gmail.com
-                </a>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 group">
-              <div className="w-12 h-12 rounded-2xl bg-surface border border-border flex items-center justify-center group-hover:bg-magenta group-hover:text-white transition-all duration-300">
-                <Linkedin size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-text-muted uppercase tracking-widest mb-1">LinkedIn</p>
-                <a href="https://linkedin.com/in/vijay-barhate" target="_blank" className="text-lg font-display font-bold hover:text-magenta transition-colors text-white">
-                  linkedin.com/in/vijay-barhate
-                </a>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 group">
-              <div className="w-12 h-12 rounded-2xl bg-surface border border-border flex items-center justify-center group-hover:bg-magenta group-hover:text-white transition-all duration-300">
-                <MapPin size={20} />
-              </div>
-              <div>
-                <p className="text-xs text-text-muted uppercase tracking-widest mb-1">Location</p>
-                <p className="text-lg font-display font-bold text-white">Kharghar, Navi Mumbai, India</p>
-              </div>
-            </div>
+      <div className="relative z-10 max-w-[1200px] mx-auto">
+        {/* Marquee */}
+        <div ref={marqueeRef} className="border-y border-stroke py-8 mb-24 overflow-hidden whitespace-nowrap select-none">
+          <div className="marquee-content inline-block">
+            {[...Array(10)].map((_, i) => (
+              <span key={i} className="text-4xl md:text-6xl lg:text-8xl font-display italic text-stroke/40 mx-4">
+                BUILDING WITH DATA • 
+              </span>
+            ))}
+            {[...Array(10)].map((_, i) => (
+              <span key={i} className="text-4xl md:text-6xl lg:text-8xl font-display italic text-stroke/40 mx-4">
+                BUILDING WITH DATA • 
+              </span>
+            ))}
           </div>
         </div>
 
-        <motion.form
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="card p-8 md:p-10 rounded-[15px] space-y-6"
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-display font-bold text-white/80 ml-2">Name</label>
-              <input
-                type="text"
-                placeholder="John Doe"
-                className="input-field w-full"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-display font-bold text-white/80 ml-2">Email</label>
-              <input
-                type="email"
-                placeholder="john@example.com"
-                className="input-field w-full"
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-display font-bold text-white/80 ml-2">Message</label>
-            <textarea
-              placeholder="How can I help you?"
-              rows={5}
-              className="w-full bg-surface border border-border rounded-[15px] px-5 py-4 outline-none focus:border-cyan transition-colors text-white placeholder:text-text-muted resize-none font-body"
-            />
-          </div>
-          <Button type="submit" className="w-full gap-2 py-5 text-base">
-            <Send size={20} />
-            Send Message
-          </Button>
-        </motion.form>
-      </div>
+        {/* CTA */}
+        <div className="text-center mb-24">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-6xl font-display italic text-text-primary mb-10"
+          >
+            Let's build <span className="text-muted">something</span> together.
+          </motion.h2>
 
-      <footer className="mt-20 pt-10 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6">
-        <p className="text-text-muted text-sm">
-          © {new Date().getFullYear()} <span className="text-white font-display font-bold">Vijay Barhate</span>. All rights reserved.
-        </p>
-        <p className="text-text-muted text-sm flex items-center gap-2">
-          Built with <span className="text-magenta font-bold">React</span> + <span className="text-cyan font-bold">Tailwind</span>
-        </p>
-      </footer>
-    </Section>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <a
+              href="mailto:barhatevinay7777@gmail.com"
+              className="group relative inline-flex items-center justify-center px-10 py-5 rounded-full bg-surface border border-stroke text-lg font-medium transition-all duration-300 hover:scale-105"
+            >
+              <div className="absolute inset-0 rounded-full accent-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-sm" />
+              <div className="absolute inset-0 rounded-full border border-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              barhatevinay7777@gmail.com
+            </a>
+            
+            <a
+              href="/portfolio/resume/vijay_resume.pdf"
+              download="Vijay_Barhate_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative inline-flex items-center justify-center px-10 py-5 rounded-full bg-bg border-2 border-stroke text-lg font-medium transition-all duration-300 hover:scale-105"
+            >
+              <div className="absolute inset-0 rounded-full accent-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+              <div className="absolute inset-[2px] bg-bg rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+              Download Resume
+            </a>
+          </div>
+        </div>
+
+        {/* Footer Bar */}
+        <div className="flex flex-col md:flex-row items-center justify-between pt-12 border-t border-stroke gap-6">
+          <div className="flex items-center gap-6">
+            <a href="https://linkedin.com/in/vijay-barhate" target="_blank" rel="noreferrer" className="text-sm text-muted hover:text-text-primary transition-colors">
+              LinkedIn <span className="text-[10px]">→</span>
+            </a>
+            <a href="https://github.com/vijaybarhate" target="_blank" rel="noreferrer" className="text-sm text-muted hover:text-text-primary transition-colors">
+              GitHub <span className="text-[10px]">→</span>
+            </a>
+          </div>
+
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-stroke bg-surface/30">
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-[10px] text-muted uppercase tracking-widest font-medium">Open to internships</span>
+          </div>
+
+          <div className="text-[10px] text-muted uppercase tracking-[0.2em]">
+            © 2026 Vijay Barhate
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
+
+export default Contact;

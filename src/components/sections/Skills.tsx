@@ -1,46 +1,72 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Section } from '../layout/Section';
-import { skillCategories } from '../../data/skills';
-import { Code2, Wrench, Lightbulb } from 'lucide-react';
+import React from "react";
+import { motion } from "framer-motion";
 
-const icons = [Code2, Wrench, Lightbulb];
+const skillCategories = [
+  {
+    title: "Languages",
+    skills: ["Python", "SQL (MySQL)", "Java", "TypeScript", "JavaScript", "HTML/CSS"],
+  },
+  {
+    title: "Libraries",
+    skills: ["Pandas", "Matplotlib", "Seaborn", "Tabulate", "React", "Framer Motion", "Zustand"],
+  },
+  {
+    title: "Tools",
+    skills: ["Git", "GitHub", "VS Code", "MySQL Workbench", "Vite"],
+  },
+  {
+    title: "Concepts",
+    skills: ["Data Analysis", "Data Visualization", "CRUD Applications", "DSA", "Agile"],
+  },
+];
 
-export const Skills: React.FC = () => {
+const Skills: React.FC = () => {
   return (
-    <Section id="skills" title="Technical Expertise" subtitle="Skills & Tools">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {skillCategories.map((category, index) => {
-          const Icon = icons[index % icons.length];
-          return (
+    <section id="skills" className="bg-bg py-24 md:py-32 px-6">
+      <div className="max-w-[1200px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="mb-16"
+        >
+          <span className="text-xs text-muted uppercase tracking-[0.3em] block mb-4">
+            EXPERTISE
+          </span>
+          <h2 className="text-4xl md:text-6xl font-display italic text-text-primary">
+            Tech <span className="text-muted">*stack*</span>
+          </h2>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
+          {skillCategories.map((category, idx) => (
             <motion.div
               key={category.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
+              initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="card p-8 rounded-[15px] hover:border-magenta/30 transition-all duration-300 group"
+              transition={{ duration: 0.8, delay: idx * 0.1 }}
             >
-              <div className="w-12 h-12 rounded-2xl bg-cyan/10 border border-cyan/20 flex items-center justify-center mb-6 group-hover:bg-magenta group-hover:text-white group-hover:border-magenta transition-all duration-300">
-                <Icon size={24} />
-              </div>
-
-              <h3 className="text-2xl font-display font-bold mb-6 text-white">{category.title}</h3>
-
+              <h3 className="text-sm text-muted uppercase tracking-widest mb-6 pb-2 border-b border-stroke">
+                {category.title}
+              </h3>
               <div className="flex flex-wrap gap-3">
                 {category.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="px-4 py-2 text-sm font-body rounded-xl bg-surface-light border border-border text-text-muted hover:text-magenta hover:border-magenta/50 transition-all duration-300 cursor-default"
+                    className="rounded-full bg-surface border border-stroke px-4 py-2 text-sm text-muted hover:text-text-primary hover:border-muted/50 transition-all duration-300 cursor-default"
                   >
                     {skill}
                   </span>
                 ))}
               </div>
             </motion.div>
-          );
-        })}
+          ))}
+        </div>
       </div>
-    </Section>
+    </section>
   );
 };
+
+export default Skills;

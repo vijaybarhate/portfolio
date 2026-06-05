@@ -1,119 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Download } from 'lucide-react';
-import { Button } from '../ui/Button';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
-const navLinks = [
-  { name: 'About', href: '#about' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Certifications', href: '#certifications' },
-  { name: 'Contact', href: '#contact' },
-];
-
-export const Navbar: React.FC = () => {
+const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const navLinks = [
+    { name: "Home", href: "#" },
+    { name: "Projects", href: "#projects" },
+    { name: "Resume", href: "#resume" },
+  ];
+
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4 ${
-        isScrolled ? 'navbar-glass py-3' : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-[1440px] mx-auto flex items-center justify-between">
-        <motion.a
-          href="#"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="text-xl font-bold tracking-tight font-display text-white"
+    <nav className="fixed top-6 left-0 right-0 z-50 flex justify-center px-6">
+      <motion.div
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className={`flex items-center gap-2 px-4 py-2 rounded-full border border-stroke transition-all duration-300 ${
+          isScrolled ? "bg-surface/80 backdrop-blur-lg" : "bg-surface/40 backdrop-blur-md"
+        }`}
+      >
+        {/* Logo */}
+        <a href="#" className="relative group">
+          <div className="w-8 h-8 rounded-full border border-stroke flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:scale-110 relative">
+            <div className="absolute inset-0 accent-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <span className="font-display italic text-[13px] relative z-10 text-text-primary">VB</span>
+          </div>
+        </a>
+
+        <div className="w-px h-4 bg-stroke mx-1" />
+
+        {/* Links */}
+        <ul className="flex items-center gap-1">
+          {navLinks.map((link) => (
+            <li key={link.name}>
+              <a
+                href={link.href}
+                className="px-3 py-1.5 text-xs text-muted hover:text-text-primary transition-colors rounded-full"
+              >
+                {link.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div className="w-px h-4 bg-stroke mx-1" />
+
+        {/* CTA */}
+        <a
+          href="mailto:barhatevinay7777@gmail.com"
+          className="px-4 py-1.5 text-xs bg-text-primary text-bg rounded-full hover:accent-gradient hover:text-text-primary transition-all duration-300 flex items-center gap-1"
         >
-          Vijay <span className="text-magenta">Barhate</span>
-        </motion.a>
-
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          <ul className="flex items-center gap-8">
-            {navLinks.map((link) => (
-              <li key={link.name}>
-                <a
-                  href={link.href}
-                  className="text-sm font-body text-text-muted hover:text-magenta transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded px-1"
-                >
-                  {link.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a
-            href="/portfolio/resume/Resume.pdf"
-            download="Vijay_Barhate_Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Button variant="outline" size="sm" className="gap-2 cursor-pointer text-magenta border-magenta hover:bg-magenta/10">
-              <Download size={14} />
-              Resume
-            </Button>
-          </a>
-        </div>
-
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-white"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X /> : <Menu />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-surface border-b border-border absolute top-full left-0 right-0 overflow-hidden"
-          >
-            <ul className="flex flex-col p-6 gap-4">
-              {navLinks.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-base font-body text-text-muted hover:text-magenta transition-colors block py-2"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-              <li className="pt-2">
-                <a
-                  href="/portfolio/resume/Resume.pdf"
-                  download="Vijay_Barhate_Resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full"
-                >
-                  <Button variant="primary" size="md" className="w-full gap-2 cursor-pointer">
-                    <Download size={18} />
-                    Download Resume
-                  </Button>
-                </a>
-              </li>
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          Say hi <span className="text-[10px]">↗</span>
+        </a>
+      </motion.div>
     </nav>
   );
 };
+
+export default Navbar;

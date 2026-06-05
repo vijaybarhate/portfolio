@@ -15,7 +15,7 @@ const education = [
     degree: "Class XII — CBSE",
     school: "Ambuja Vidya Niketan, Chandrapur",
     period: "2023",
-    details: "Computer Science: 89/100 | Percentage: 69.4%"
+    details: "Computer Science: 89/100"
   },
   {
     degree: "Class X — CBSE",
