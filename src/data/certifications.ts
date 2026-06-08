@@ -37,7 +37,7 @@ export const certifications: Certification[] = [
     date: "Oct 2024"
   },
   {
-    title: "Alpha — DSA with Java",
+    title: "Alpha | DSA with Java",
     issuer: "Apna College",
     date: "2023"
   }

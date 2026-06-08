@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Section } from "../layout/Section";
 
 const skillCategories = [
   {
@@ -22,50 +23,44 @@ const skillCategories = [
 
 const Skills: React.FC = () => {
   return (
-    <section id="skills" className="bg-bg py-24 md:py-32 px-6">
-      <div className="max-w-[1200px] mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mb-16"
-        >
-          <span className="text-xs text-muted uppercase tracking-[0.3em] block mb-4">
-            EXPERTISE
-          </span>
-          <h2 className="text-4xl md:text-6xl font-display italic text-text-primary">
-            Tech <span className="text-muted">*stack*</span>
-          </h2>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
-          {skillCategories.map((category, idx) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: idx * 0.1 }}
-            >
-              <h3 className="text-sm text-muted uppercase tracking-widest mb-6 pb-2 border-b border-stroke">
+    <Section id="skills" title="Expertise & Stack" subtitle="Capability">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 md:gap-y-24">
+        {skillCategories.map((category, idx) => (
+          <motion.div
+            key={category.title}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.23, 1, 0.32, 1] }}
+            className={`${
+              idx === 0 ? "md:col-span-7" : 
+              idx === 1 ? "md:col-span-5" : 
+              idx === 2 ? "md:col-span-4" : 
+              "md:col-span-8"
+            }`}
+          >
+            <div className="flex items-center gap-4 mb-6 md:mb-8">
+              <h3 className="text-[10px] uppercase tracking-[0.4em] text-muted whitespace-nowrap">
                 {category.title}
               </h3>
-              <div className="flex flex-wrap gap-3">
-                {category.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="rounded-full bg-surface border border-stroke px-4 py-2 text-sm text-muted hover:text-text-primary hover:border-muted/50 transition-all duration-300 cursor-default"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              <div className="w-full h-px bg-stroke" />
+            </div>
+            
+            <div className="flex flex-wrap gap-2 md:gap-3">
+              {category.skills.map((skill) => (
+                <motion.span
+                  key={skill}
+                  whileHover={{ scale: 1.05, borderColor: "rgba(137, 170, 204, 0.4)" }}
+                  className="rounded-full bg-surface/50 backdrop-blur-sm border border-stroke px-4 py-2 md:px-5 md:py-2.5 text-xs md:text-sm text-muted hover:text-text-primary transition-all duration-300 cursor-default"
+                >
+                  {skill}
+                </motion.span>
+              ))}
+            </div>
+          </motion.div>
+        ))}
       </div>
-    </section>
+    </Section>
   );
 };
 
