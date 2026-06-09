@@ -44,17 +44,17 @@ The portfolio utilizes a layered UI-Canvas layout, separating interactive HTML e
 graph TD
     User([User Screen]) --> Scroll[Scroll Listener]
     
-    subgraph Browser DOM Layout
+    subgraph dom["Browser DOM Layout"]
         Scroll --> GSAP["GSAP ScrollTrigger (Animation Driver)"]
         GSAP --> CanvasTransform["Camera Translation / Rotation"]
         
-        subgraph WebGL Context (R3F Layer)
+        subgraph webgl["WebGL Context (R3F Layer)"]
             CanvasTransform --> Camera["Perspective Camera Controller"]
             Camera --> Scene["3D Canvas Scene"]
             Scene --> Avatar["Draco Compressed GLB Model"]
         end
         
-        subgraph HTML DOM Layer (React Overlay)
+        subgraph html["HTML DOM Layer (React Overlay)"]
             Scene -.-> Overlay["Text Panels & Responsive Project Cards"]
         end
     end
