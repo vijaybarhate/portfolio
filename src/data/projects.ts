@@ -29,6 +29,40 @@ export const projects: Project[] = [
     liveUrl: "https://vijaybarhate.github.io/SONIVIO-Music-Player/"
   },
   {
+    id: "traffic-control",
+    title: "AI-Powered Traffic Control Dashboard",
+    description: "Real-time glassmorphic traffic management dashboard and AI control system with multi-threaded Python Flask backend and optional OpenCV vehicle detection.",
+    longDescription: "Engineered a cyber-dark, glassmorphic React dashboard displaying live vehicle tracking and traffic control status. Powered by a multi-threaded Python Flask backend coordinating an automated AI signal controller, with built-in OpenCV detection pipeline and high-fidelity simulated fallback mode for offline previewing.",
+    stack: ["React", "Vite", "TypeScript", "Tailwind CSS", "Flask", "Python", "OpenCV", "shadcn/ui"],
+    features: [
+      "Real-Time Vehicle Count Tracking",
+      "Automated Signal Optimization (AI Mode)",
+      "Interactive Manual Override Panel",
+      "Multi-Threaded Flask Backend API",
+      "Optional OpenCV Computer Vision Pipeline",
+      "Robust Simulated Fallback Mode",
+      "Cyber-Dark Glassmorphic UI Aesthetics"
+    ],
+    githubUrl: "https://github.com/vijaybarhate/Smart-Traffic-Control-Dashboard"
+  },
+  {
+    id: "valorant-tweaks",
+    title: "Valorant Extreme Laptop Optimizer",
+    description: "Deep systems performance tuning and automation scripts for Intel hybrid CPUs and NVIDIA GPUs on Windows, maximizing FPS and eliminating frame stuttering.",
+    longDescription: "Developed a comprehensive Windows performance optimization framework tailored for hybrid-core gaming laptops (Lenovo LOQ). Features custom PowerShell automation scripts executing 30+ kernel, network socket (Nagle's algorithm), thread scheduling, and DPC latency adjustments, alongside detailed manual BIOS and GPU driver optimization steps.",
+    stack: ["PowerShell", "Batch Scripting", "Windows Registry", "System Internals"],
+    features: [
+      "P-Core CPU Affinity Mask Binds",
+      "MMCSS Responsiveness Prioritization",
+      "Nagle's Algorithm Socket Overrides",
+      "DPC Latency Minimization (MSI Mode)",
+      "Service Stripping & Telemetry Auditing",
+      "Ultimate Performance Power BCD Binds",
+      "Automatic and Manual Optimization Layouts"
+    ],
+    githubUrl: "https://github.com/vijaybarhate/Valorant-Extreme-LOQ"
+  },
+  {
     id: "result-analyzer",
     title: "Student Result Analyzer",
     description: "Python-based academic data analysis suite that automatically generates realistic student records and produces publication-ready visualization charts and reports.",
