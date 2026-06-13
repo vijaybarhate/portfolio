@@ -12,6 +12,23 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: "student-utility-hub",
+    title: "Student Utility Hub",
+    description: "Premium, distraction-free suite of academic calculators for Indian college students, featuring attendance tracking, SGPA/CGPA projection, ATKT eligibility audits, and theory passing calculators.",
+    longDescription: "Architected a local-first academic platform tailored to Indian university guidelines (SPPU, Mumbai University, VTU, etc.). Designed specialized ATKT promotion safety checks, dynamic 75% attendance bunk planners, and exam-passing estimators. Integrated offline PWA capabilities, rich SEO markup, and Cloudflare Pages CI/CD.",
+    stack: ["Astro", "React", "TypeScript", "Tailwind CSS", "Cloudflare Pages"],
+    features: [
+      "Attendance & Bunk Tracking System",
+      "SGPA / CGPA Target Projection",
+      "MU/SPPU ATKT Eligibility Engine",
+      "Theory Pass Marks Estimator",
+      "Local-First Privacy Architecture",
+      "Offline PWA Support & Cache API"
+    ],
+    githubUrl: "https://github.com/vijaybarhate/student-utility-hub",
+    liveUrl: "https://student-utility-hub-e7l.pages.dev"
+  },
+  {
     id: "sonivio",
     title: "SONIVIO Music Streaming Platform",
     description: "Premium music streaming platform built with Astro Islands architecture, Zustand state management, and a secure YouTube API proxy supporting persistent playback, playlists, favorites, and listening history.",
