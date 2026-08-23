@@ -1,45 +1,34 @@
 import React from "react";
-import { motion } from "framer-motion";
 import { certifications } from "../../data/certifications";
-import { Section } from "../layout/Section";
+import SectionHead from "../layout/SectionHead";
+import Reveal from "../layout/Reveal";
 
-const Certifications: React.FC = () => {
-  return (
-    <Section id="certifications" title="Certs & Courses" subtitle="Recognitions">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-        {certifications.map((cert, index) => (
-          <motion.div
-            key={cert.title}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: index * 0.05, ease: [0.23, 1, 0.32, 1] }}
-            className="group relative p-6 rounded-[24px] bg-surface border border-stroke hover:border-accent/30 transition-all duration-500 flex flex-col justify-between aspect-[4/3] md:aspect-square lg:aspect-[4/3]"
-          >
-            <div className="absolute top-6 right-6 w-8 h-8 rounded-full border border-stroke flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              <span className="text-[10px] accent-gradient-text">↗</span>
-            </div>
+const Certifications: React.FC = () => (
+  <section id="certifications" className="px-5 md:px-10 py-24 md:py-36 border-t border-line">
+    <SectionHead num="04" label="Certifications" meta={`(${String(certifications.length).padStart(2, "0")})`} />
 
-            <div className="space-y-4">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-accent">
-                {cert.issuer}
-              </span>
-              <h3 className="text-xl md:text-2xl font-display italic text-text-primary leading-tight group-hover:accent-gradient-text transition-all duration-300">
-                {cert.title}
-              </h3>
-            </div>
+    <div>
+      {certifications.map((cert, i) => (
+        <Reveal key={cert.title} delay={i * 0.04}>
+          <div className="group grid grid-cols-[4.5rem_1fr] md:grid-cols-[7rem_1fr_16rem] gap-x-4 md:gap-x-8 items-baseline border-b border-line py-5 md:py-6 transition-colors duration-300 hover:bg-ink hover:text-paper -mx-3 px-3 md:-mx-5 md:px-5">
+            <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted group-hover:text-paper/50 transition-colors duration-300 whitespace-nowrap">
+              {cert.date}
+            </span>
+            <h3 className="font-medium text-base md:text-xl tracking-tight leading-snug">{cert.title}</h3>
+            <span className="hidden md:block font-mono text-[11px] uppercase tracking-[0.1em] text-muted group-hover:text-paper/50 transition-colors duration-300 md:text-right">
+              {cert.issuer}
+            </span>
+          </div>
+        </Reveal>
+      ))}
+    </div>
 
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] uppercase tracking-wider text-muted">
-                {cert.date}
-              </span>
-              <div className="w-12 h-px bg-stroke group-hover:w-24 group-hover:bg-accent transition-all duration-500" />
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </Section>
-  );
-};
+    <Reveal>
+      <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.15em] text-muted md:hidden leading-loose">
+        Issued by EduBridge · OpenAI Academy · Accenture · NxtWave · Acmegrade · Apna College
+      </p>
+    </Reveal>
+  </section>
+);
 
 export default Certifications;

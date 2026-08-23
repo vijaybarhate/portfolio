@@ -1,155 +1,108 @@
-import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
-import gsap from "gsap";
+import React, { Suspense, lazy, useRef } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { ArrowDown } from "lucide-react";
 
-const Magnetic: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+const HeroField = lazy(() => import("../three/HeroField"));
 
-  const springConfig = { stiffness: 150, damping: 15, mass: 0.1 };
-  const springX = useSpring(x, springConfig);
-  const springY = useSpring(y, springConfig);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const { left, top, width, height } = ref.current!.getBoundingClientRect();
-    const centerX = left + width / 2;
-    const centerY = top + height / 2;
-    const distanceX = clientX - centerX;
-    const distanceY = clientY - centerY;
-    
-    // Reduced pull by ~50% (0.35 -> 0.15) for subtle discovery
-    x.set(distanceX * 0.15);
-    y.set(distanceY * 0.15);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ x: springX, y: springY }}
-    >
-      {children}
-    </motion.div>
-  );
+const line = {
+  hidden: { y: "110%" },
+  show: (i: number) => ({
+    y: "0%",
+    transition: { duration: 1.1, delay: 0.15 + i * 0.12, ease: [0.16, 1, 0.3, 1] as const },
+  }),
 };
 
-const Hero: React.FC = () => {
-  const [roleIndex, setRoleIndex] = useState(0);
-  const roles = ["Python Developer", "Data Analyst", "Software Engineer", "AI/ML Enthusiast"];
-  const heroRef = useRef<HTMLDivElement>(null);
+interface HeroProps {
+  ready: boolean;
+}
 
-  useEffect(() => {
-    const roleInterval = setInterval(() => {
-      setRoleIndex((prev) => (prev + 1) % roles.length);
-    }, 2400);
+const Hero: React.FC<HeroProps> = ({ ready }) => {
+  const reduce = useReducedMotion();
+  const anim = reduce ? { hidden: {}, show: {} } : line;
+  const ref = useRef<HTMLElement>(null);
 
-    // GSAP Entrance
-    const ctx = gsap.context(() => {
-      gsap.to(".name-reveal", {
-        opacity: 1,
-        y: 0,
-        duration: 1.2,
-        delay: 0.1,
-        ease: "expo.out",
-      });
-      gsap.to(".blur-in", {
-        opacity: 1,
-        filter: "blur(0px)",
-        y: 0,
-        duration: 1,
-        stagger: 0.1,
-        delay: 0.3,
-        ease: "expo.out",
-      });
-    }, heroRef);
-
-    return () => {
-      clearInterval(roleInterval);
-      ctx.revert();
-    };
-  }, []);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : 150]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+  const fieldOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0.12]);
 
   return (
-    <section 
-      ref={heroRef}
-      className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center text-center px-6 overflow-hidden bg-bg"
+    <section
+      id="top"
+      ref={ref}
+      className="relative min-h-dvh flex flex-col justify-between px-5 md:px-10 pt-24 md:pt-32 pb-8 overflow-hidden"
     >
-      {/* Background Gradient Animation */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(137,170,204,0.06),transparent_70%)] animate-gradient-shift" />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.1] brightness-50 contrast-150 mix-blend-overlay pointer-events-none" />
-      </div>
+      <motion.div style={{ opacity: fieldOpacity }} className="absolute inset-0">
+        <Suspense fallback={null}>
+          <HeroField />
+        </Suspense>
+      </motion.div>
 
-      <div className="relative z-10 max-w-5xl mx-auto">
-        <div className="blur-in overflow-hidden mb-8">
-          <span className="inline-block text-[10px] text-muted uppercase tracking-[0.4em]">
-            Vijay Barhate / Computer Engineering
-          </span>
+      <motion.div style={{ y: contentY, opacity: contentOpacity }} className="relative z-10 contents">
+        <div className="flex items-center justify-between font-mono text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-muted border-b border-line pb-4">
+          <span>Portfolio — 2026</span>
+          <span className="hidden sm:inline">B.E. Computer Engineering</span>
+          <span>Navi Mumbai, IN</span>
         </div>
-        
-        <Magnetic>
-          <h1 className="name-reveal cursor-default text-5xl sm:text-6xl md:text-[8rem] font-display italic leading-[0.85] tracking-tight mb-6 md:mb-8 text-text-primary select-none break-words">
-            Vijay Barhate
-          </h1>
-        </Magnetic>
 
-        <div className="blur-in h-10 md:h-16 flex items-center justify-center mb-6 md:mb-8">
-          <p className="text-lg md:text-3xl font-light text-text-primary/90">
-            A{" "}
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={roles[roleIndex]}
-                initial={{ opacity: 0, y: 5, filter: "blur(4px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -5, filter: "blur(4px)" }}
-                transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                className="font-display italic text-accent accent-gradient-text"
-              >
-                {roles[roleIndex]}
+        <div className="py-10 md:py-0">
+          <h1 className="font-display font-extrabold uppercase leading-[0.86] tracking-[-0.03em] text-[clamp(2rem,10vw,12.5rem)]">
+            <span className="block overflow-hidden">
+              <motion.span custom={0} variants={anim} initial="hidden" animate={ready ? "show" : "hidden"} className="block">
+                Vijay
               </motion.span>
-            </AnimatePresence>{" "}
-            based in India.
-          </p>
+            </span>
+            <span className="block overflow-hidden">
+              <motion.span custom={1} variants={anim} initial="hidden" animate={ready ? "show" : "hidden"} className="block">
+                Barhate<span className="text-accent">.</span>
+              </motion.span>
+            </span>
+          </h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: ready ? 1 : 0 }}
+            transition={{ delay: 0.7, duration: 0.8 }}
+            className="mt-6 md:mt-8 font-mono text-xs md:text-sm uppercase tracking-[0.2em] text-muted"
+          >
+            Python Developer <span className="text-accent">&amp;</span> Data Analyst
+          </motion.p>
         </div>
 
-        <p className="blur-in max-w-xl mx-auto text-muted text-sm md:text-lg mb-8 md:mb-12 leading-relaxed font-body px-2">
-          B.E. Computer Engineering student at Mumbai University focused on Software Development, Python, and AI-powered applications.
-        </p>
+        <div className="flex items-end justify-between gap-8 border-t border-line pt-5">
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: ready ? 1 : 0, y: ready ? 0 : 16 }}
+            transition={{ delay: 0.85, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-md text-base md:text-lg leading-relaxed text-ink/80"
+          >
+            I build practical, data-centric software — automation, analysis and clean
+            architecture that feels as good as it functions.
+          </motion.p>
 
-        <div className="blur-in flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 w-full px-4">
           <motion.a
-            href="/portfolio/resume/vijay_resume.pdf"
-            download="Vijay_Barhate_Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            className="group relative px-8 py-3.5 md:px-10 md:py-4 rounded-full text-sm font-medium transition-all bg-text-primary text-bg overflow-hidden w-full sm:w-auto flex items-center justify-center"
+            href="#contact"
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: ready ? 1 : 0, scale: ready ? 1 : 0.6 }}
+            transition={{ delay: 1.05, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            data-cursor="Say hi"
+            aria-label="Scroll to contact"
+            className="relative hidden sm:flex h-24 w-24 lg:h-28 lg:w-28 shrink-0 items-center justify-center"
           >
-            <div className="absolute inset-0 accent-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-            <span className="relative z-10">Download Resume</span>
-          </motion.a>
-          
-          <motion.a
-            href="#projects"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            className="px-8 py-3.5 md:px-10 md:py-4 rounded-full text-sm font-medium border border-stroke bg-surface/50 backdrop-blur-sm hover:border-text-primary transition-colors text-text-primary w-full sm:w-auto flex items-center justify-center"
-          >
-            View Projects
+            <svg viewBox="0 0 100 100" className="absolute inset-0 animate-spin-slow">
+              <defs>
+                <path id="badge-circle" d="M 50,50 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
+              </defs>
+              <text className="fill-current font-mono uppercase" fontSize="8.2" letterSpacing="2.2">
+                <textPath href="#badge-circle">
+                  Open to internships · Data · Python ·
+                </textPath>
+              </text>
+            </svg>
+            <ArrowDown size={20} className="text-accent" />
           </motion.a>
         </div>
-      </div>
-
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 h-12 w-px bg-gradient-to-b from-stroke to-transparent opacity-30" />
+      </motion.div>
     </section>
   );
 };
