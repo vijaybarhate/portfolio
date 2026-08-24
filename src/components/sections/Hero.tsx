@@ -4,6 +4,19 @@ import { ArrowDown } from "lucide-react";
 
 const HeroField = lazy(() => import("../three/HeroField"));
 
+class FieldBoundary extends React.Component<
+  { children: React.ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
 const line = {
   hidden: { y: "110%" },
   show: (i: number) => ({
@@ -34,7 +47,9 @@ const Hero: React.FC<HeroProps> = ({ ready }) => {
     >
       <motion.div style={{ opacity: fieldOpacity }} className="absolute inset-0">
         <Suspense fallback={null}>
-          <HeroField />
+          <FieldBoundary>
+            <HeroField />
+          </FieldBoundary>
         </Suspense>
       </motion.div>
 

@@ -26,7 +26,8 @@ export const projects: Project[] = [
       "Offline PWA Support & Cache API"
     ],
     githubUrl: "https://github.com/vijaybarhate/student-utility-hub",
-    liveUrl: "https://student-utility-hub-e7l.pages.dev"
+    liveUrl: "https://student-utility-hub-e7l.pages.dev",
+    image: "/portfolio/images/work/suh.webp",
   },
   {
     id: "sonivio",
@@ -43,7 +44,8 @@ export const projects: Project[] = [
       "Time-Based Dynamic Greetings"
     ],
     githubUrl: "https://github.com/vijaybarhate/SONIVIO-Music-Player",
-    liveUrl: "https://vijaybarhate.github.io/SONIVIO-Music-Player/"
+    liveUrl: "https://vijaybarhate.github.io/SONIVIO-Music-Player/",
+    image: "/portfolio/images/work/sonivio.webp",
   },
   {
     id: "traffic-control",

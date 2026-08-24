@@ -13,58 +13,152 @@ import Reveal from "../layout/Reveal";
 const featured = projects[0];
 const rest = projects.slice(1);
 
-const Thumb: React.FC<{ index: number; title: string }> = ({ index, title }) => {
+type Tone = "cmd" | "out" | "ok" | "dim";
+
+const TERMINALS: Record<string, { title: string; lines: { t: string; c: Tone }[] }> = {
+  "valorant-tweaks": {
+    title: "PowerShell — Optimize-LOQ",
+    lines: [
+      { t: "PS> .\\Optimize-LOQ.ps1 -Mode Ultimate", c: "cmd" },
+      { t: "[OK] P-Core affinity mask bound", c: "ok" },
+      { t: "[OK] Nagle's algorithm disabled", c: "ok" },
+      { t: "[OK] DPC latency -> MSI mode", c: "ok" },
+      { t: "[OK] MMCSS priority: Games", c: "ok" },
+      { t: "FPS uplift +38% avg · stutter 0.2%", c: "dim" },
+    ],
+  },
+  "result-analyzer": {
+    title: "bash — analyze.py",
+    lines: [
+      { t: "$ python analyze.py --report", c: "cmd" },
+      { t: "Synthetic records generated: 500", c: "out" },
+      { t: "Pass ratio 87.4%  ▇▇▇▇▇▇▆", c: "ok" },
+      { t: "Grade distribution charted", c: "out" },
+      { t: "Exported -> /reports/*.png", c: "dim" },
+    ],
+  },
+  "expense-tracker": {
+    title: "bash — expense-cli",
+    lines: [
+      { t: "$ expense report --month Aug", c: "cmd" },
+      { t: "FOOD    ▇▇▇▇▇▇▇▇  ₹3,420", c: "out" },
+      { t: "TRAVEL  ▇▇▇▇      ₹1,180", c: "out" },
+      { t: "! Budget alert: 82% of cap", c: "ok" },
+      { t: "CSV backup written", c: "dim" },
+    ],
+  },
+  "fee-management": {
+    title: "console — fee-admin",
+    lines: [
+      { t: "== School Fee Management ==", c: "cmd" },
+      { t: "> pay  Student:22CS047  Aug", c: "cmd" },
+      { t: "₹12,500 logged · receipt #481", c: "out" },
+      { t: "Duplicate check: CLEAR", c: "ok" },
+      { t: "Ledger synced to MySQL", c: "dim" },
+    ],
+  },
+};
+
+const TerminalThumb: React.FC<{ id: string }> = ({ id }) => {
+  const term = TERMINALS[id];
+  return (
+    <div className="flex h-full w-full flex-col">
+      <div className="flex items-center gap-1.5 border-b border-paper/10 px-3 py-2">
+        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+        <span className="h-1.5 w-1.5 rounded-full bg-paper/30" />
+        <span className="h-1.5 w-1.5 rounded-full bg-paper/30" />
+        <span className="ml-2 font-mono text-[8px] uppercase tracking-[0.2em] text-paper/40">
+          {term.title}
+        </span>
+      </div>
+      <div className="flex flex-1 flex-col justify-center gap-[3px] px-3 py-2 font-mono text-[8px] leading-snug">
+        {term.lines.map((l, i) => (
+          <span
+            key={i}
+            className={
+              l.c === "cmd"
+                ? "text-paper/85"
+                : l.c === "ok"
+                  ? "text-accent"
+                  : l.c === "dim"
+                    ? "text-paper/35"
+                    : "text-paper/55"
+            }
+          >
+            {l.t}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const Thumb: React.FC<{ index: number; project: Project }> = ({ index, project }) => {
   const variant = index % 4;
-  const initials = title
+  const initials = project.title
     .split(" ")
     .slice(0, 2)
     .map((w) => w[0])
     .join("");
   return (
     <div className="relative h-44 w-72 overflow-hidden rounded-sm border border-line bg-ink text-paper shadow-2xl">
-      <svg viewBox="0 0 288 176" className="absolute inset-0 h-full w-full" aria-hidden>
-        {variant === 0 && (
-          <g fill="none" stroke="#eae8e2" strokeOpacity="0.35">
-            {[26, 52, 78, 104].map((r) => (
-              <circle key={r} cx="144" cy="88" r={r} />
-            ))}
-            <circle cx="144" cy="88" r="10" fill="#ff4d00" stroke="none" />
-          </g>
-        )}
-        {variant === 1 && (
-          <g stroke="#eae8e2" strokeOpacity="0.3">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <line key={i} x1={i * 26 - 40} y1="190" x2={i * 26 + 60} y2="-10" />
-            ))}
-            <line x1="-10" y1="150" x2="300" y2="30" stroke="#ff4d00" strokeWidth="2.5" />
-          </g>
-        )}
-        {variant === 2 && (
-          <g fill="#eae8e2" fillOpacity="0.3">
-            {Array.from({ length: 8 }).map((_, r) =>
-              Array.from({ length: 12 }).map((_, c) => (
-                <circle key={`${r}-${c}`} cx={16 + c * 24} cy={14 + r * 22} r="2.6" />
-              ))
-            )}
-            <rect x="112" y="66" width="64" height="44" fill="none" stroke="#ff4d00" strokeWidth="2.5" />
-          </g>
-        )}
-        {variant === 3 && (
-          <g fill="none" stroke="#eae8e2" strokeOpacity="0.35">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <path
-                key={i}
-                d={`M -10 ${40 + i * 26} Q 72 ${10 + i * 26} 144 ${46 + i * 26} T 300 ${38 + i * 26}`}
-              />
-            ))}
-            <circle cx="230" cy="42" r="7" fill="#ff4d00" stroke="none" />
-          </g>
-        )}
-      </svg>
-      <span className="absolute bottom-2 right-3 font-display font-extrabold text-5xl uppercase text-outline" style={{ WebkitTextStrokeColor: "#eae8e2" }}>
-        {initials}
-      </span>
-      <span className="absolute top-2 left-3 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/50">
+      {project.image ? (
+        <img
+          src={project.image}
+          alt={`${project.title} preview`}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover object-top"
+        />
+      ) : TERMINALS[project.id] ? (
+        <TerminalThumb id={project.id} />
+      ) : (
+        <svg viewBox="0 0 288 176" className="absolute inset-0 h-full w-full" aria-hidden>
+          {variant === 0 && (
+            <g fill="none" stroke="#eae8e2" strokeOpacity="0.35">
+              {[26, 52, 78, 104].map((r) => (
+                <circle key={r} cx="144" cy="88" r={r} />
+              ))}
+              <circle cx="144" cy="88" r="10" fill="#ff4d00" stroke="none" />
+            </g>
+          )}
+          {variant === 1 && (
+            <g stroke="#eae8e2" strokeOpacity="0.3">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <line key={i} x1={i * 26 - 40} y1="190" x2={i * 26 + 60} y2="-10" />
+              ))}
+              <line x1="-10" y1="150" x2="300" y2="30" stroke="#ff4d00" strokeWidth="2.5" />
+            </g>
+          )}
+          {variant === 2 && (
+            <g fill="#eae8e2" fillOpacity="0.3">
+              {Array.from({ length: 8 }).map((_, r) =>
+                Array.from({ length: 12 }).map((_, c) => (
+                  <circle key={`${r}-${c}`} cx={16 + c * 24} cy={14 + r * 22} r="2.6" />
+                ))
+              )}
+              <rect x="112" y="66" width="64" height="44" fill="none" stroke="#ff4d00" strokeWidth="2.5" />
+            </g>
+          )}
+          {variant === 3 && (
+            <g fill="none" stroke="#eae8e2" strokeOpacity="0.35">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <path
+                  key={i}
+                  d={`M -10 ${40 + i * 26} Q 72 ${10 + i * 26} 144 ${46 + i * 26} T 300 ${38 + i * 26}`}
+                />
+              ))}
+              <circle cx="230" cy="42" r="7" fill="#ff4d00" stroke="none" />
+            </g>
+          )}
+        </svg>
+      )}
+      {!project.image && (
+        <span className="absolute bottom-2 right-3 font-display font-extrabold text-5xl uppercase text-outline" style={{ WebkitTextStrokeColor: "#eae8e2" }}>
+          {initials}
+        </span>
+      )}
+      <span className="absolute top-2 left-3 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/50 mix-blend-difference">
         {String(index + 2).padStart(2, "0")} — Preview
       </span>
     </div>
@@ -117,6 +211,27 @@ const Feature: React.FC<{ project: Project }> = ({ project }) => (
         {project.stack.join(" / ")}
       </p>
     </div>
+    {project.image && (
+      <a
+        href={project.liveUrl || project.githubUrl}
+        target="_blank"
+        rel="noreferrer"
+        data-cursor="Visit"
+        aria-label={`Open ${project.title}`}
+        className="group relative col-span-full block overflow-hidden rounded-sm border border-line bg-ink"
+      >
+        <img
+          src={project.image}
+          alt={`${project.title} — live interface`}
+          loading="lazy"
+          decoding="async"
+          className="aspect-[21/9] w-full object-cover object-top transition-transform duration-700 ease-out will-change-transform group-hover:scale-[1.02]"
+        />
+        <span className="absolute bottom-3 right-4 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/70 mix-blend-difference">
+          Live capture — {new Date().getFullYear()}
+        </span>
+      </a>
+    )}
   </Reveal>
 );
 
@@ -203,7 +318,7 @@ const Work: React.FC = () => {
               className="pointer-events-none fixed left-0 top-0 z-[120] hidden lg:block"
             >
               <div className="-translate-x-1/2 -translate-y-[115%]">
-                <Thumb index={active} title={rest[active].title} />
+                <Thumb index={active} project={rest[active]} />
               </div>
             </motion.div>
           )}
