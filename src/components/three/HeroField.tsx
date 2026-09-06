@@ -91,6 +91,7 @@ const HeroField: React.FC = () => {
     });
 
     const points = new THREE.Points(geo, mat);
+    points.frustumCulled = false;
     scene.add(points);
 
     const raycaster = new THREE.Raycaster();
@@ -112,6 +113,7 @@ const HeroField: React.FC = () => {
       if (!parent) return;
       const w = parent.clientWidth;
       const h = parent.clientHeight;
+      if (w === 0 || h === 0) return;
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
@@ -122,12 +124,12 @@ const HeroField: React.FC = () => {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let raf = 0;
-    const clock = new THREE.Clock();
+    const start = performance.now();
 
     const frame = () => {
       raf = requestAnimationFrame(frame);
       if (document.hidden) return;
-      uniforms.uTime.value = clock.getElapsedTime();
+      uniforms.uTime.value = reduce ? 4 : (performance.now() - start) / 1000;
       raycaster.setFromCamera(ndc, camera);
       if (raycaster.ray.intersectPlane(plane, hit)) {
         uniforms.uMouse.value.set(hit.x, hit.z);
@@ -135,12 +137,7 @@ const HeroField: React.FC = () => {
       renderer.render(scene, camera);
     };
 
-    if (reduce) {
-      uniforms.uTime.value = 4;
-      renderer.render(scene, camera);
-    } else {
-      frame();
-    }
+    frame();
 
     return () => {
       cancelAnimationFrame(raf);
