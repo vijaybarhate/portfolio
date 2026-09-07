@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Lenis from "lenis";
-import { AnimatePresence, useReducedMotion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import Header from "./components/layout/Header";
 import Cursor from "./components/layout/Cursor";
 import Preloader from "./components/layout/Preloader";
@@ -23,11 +23,9 @@ const marqueeItems = [
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const reduce = useReducedMotion();
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    if (reduce) return;
     const lenis = new Lenis({
       duration: 1.15,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -44,7 +42,7 @@ function App() {
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, [reduce]);
+  }, []);
 
   useEffect(() => {
     document.documentElement.style.overflow = loading ? "hidden" : "";

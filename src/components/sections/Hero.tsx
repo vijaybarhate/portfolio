@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 
 const HeroField = lazy(() => import("../three/HeroField"));
@@ -30,12 +30,10 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ ready }) => {
-  const reduce = useReducedMotion();
-  const anim = reduce ? { hidden: {}, show: {} } : line;
   const ref = useRef<HTMLElement>(null);
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : 150]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 150]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
   const fieldOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0.12]);
 
@@ -63,12 +61,12 @@ const Hero: React.FC<HeroProps> = ({ ready }) => {
         <div className="py-10 md:py-0">
           <h1 className="font-display font-extrabold uppercase leading-[0.86] tracking-[-0.03em] text-[clamp(2rem,10vw,12.5rem)]">
             <span className="block overflow-hidden">
-              <motion.span custom={0} variants={anim} initial="hidden" animate={ready ? "show" : "hidden"} className="block">
+              <motion.span custom={0} variants={line} initial="hidden" animate={ready ? "show" : "hidden"} className="block">
                 Vijay
               </motion.span>
             </span>
             <span className="block overflow-hidden">
-              <motion.span custom={1} variants={anim} initial="hidden" animate={ready ? "show" : "hidden"} className="block">
+              <motion.span custom={1} variants={line} initial="hidden" animate={ready ? "show" : "hidden"} className="block">
                 Barhate<span className="text-accent">.</span>
               </motion.span>
             </span>

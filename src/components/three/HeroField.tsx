@@ -122,12 +122,13 @@ const HeroField: React.FC = () => {
     const ro = new ResizeObserver(resize);
     if (canvas.parentElement) ro.observe(canvas.parentElement);
 
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let raf = 0;
     const start = performance.now();
 
-    const draw = () => {
-      if (reduce) uniforms.uTime.value = 4;
+    const frame = () => {
+      raf = requestAnimationFrame(frame);
+      if (document.hidden) return;
+      uniforms.uTime.value = (performance.now() - start) / 1000;
       raycaster.setFromCamera(ndc, camera);
       if (raycaster.ray.intersectPlane(plane, hit)) {
         uniforms.uMouse.value.set(hit.x, hit.z);
@@ -135,18 +136,7 @@ const HeroField: React.FC = () => {
       renderer.render(scene, camera);
     };
 
-    const frame = () => {
-      raf = requestAnimationFrame(frame);
-      if (document.hidden) return;
-      uniforms.uTime.value = (performance.now() - start) / 1000;
-      draw();
-    };
-
-    if (reduce) {
-      draw();
-    } else {
-      frame();
-    }
+    frame();
 
     return () => {
       cancelAnimationFrame(raf);
