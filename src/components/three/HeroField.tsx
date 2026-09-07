@@ -126,10 +126,8 @@ const HeroField: React.FC = () => {
     let raf = 0;
     const start = performance.now();
 
-    const frame = () => {
-      raf = requestAnimationFrame(frame);
-      if (document.hidden) return;
-      uniforms.uTime.value = reduce ? 4 : (performance.now() - start) / 1000;
+    const draw = () => {
+      if (reduce) uniforms.uTime.value = 4;
       raycaster.setFromCamera(ndc, camera);
       if (raycaster.ray.intersectPlane(plane, hit)) {
         uniforms.uMouse.value.set(hit.x, hit.z);
@@ -137,7 +135,18 @@ const HeroField: React.FC = () => {
       renderer.render(scene, camera);
     };
 
-    frame();
+    const frame = () => {
+      raf = requestAnimationFrame(frame);
+      if (document.hidden) return;
+      uniforms.uTime.value = (performance.now() - start) / 1000;
+      draw();
+    };
+
+    if (reduce) {
+      draw();
+    } else {
+      frame();
+    }
 
     return () => {
       cancelAnimationFrame(raf);

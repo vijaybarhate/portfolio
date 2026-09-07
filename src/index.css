@@ -11,7 +11,7 @@
   --font-body: "Instrument Sans", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --animate-marquee: marquee 28s linear infinite;
+  --animate-marquee: marquee 45s linear infinite;
   --animate-spin-slow: spin 14s linear infinite;
 
   @keyframes marquee {
@@ -82,6 +82,10 @@
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .animate-marquee {
+    animation: none !important;
   }
 
   *,
