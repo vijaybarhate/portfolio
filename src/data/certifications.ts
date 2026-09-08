@@ -42,21 +42,3 @@ export const certifications: Certification[] = [
     date: "2023"
   }
 ];
-
-export const activities = [
-  {
-    role: "Core Member",
-    organization: "Coding Club, Saraswati College of Engineering",
-    focus: "Data Analytics & AI/ML focus"
-  },
-  {
-    role: "Participant",
-    organization: "Smart India Hackathon (SIH) 2024",
-    focus: "National-level government hackathon"
-  },
-  {
-    role: "NCC Cadet",
-    organization: "21 MAH BN NCC Wardha",
-    focus: "NCC ‘A’ Certificate with Grade A"
-  }
-];

@@ -3,12 +3,15 @@ import {
   AnimatePresence,
   motion,
   useMotionValue,
+  useScroll,
   useSpring,
+  useTransform,
 } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { projects, type Project } from "../../data/projects";
 import SectionHead from "../layout/SectionHead";
 import Reveal from "../layout/Reveal";
+import { useMotionPreference } from "../layout/MotionContext";
 
 const featured = projects[0];
 const rest = projects.slice(1);
@@ -67,7 +70,7 @@ const TerminalThumb: React.FC<{ id: string }> = ({ id }) => {
         <span className="h-1.5 w-1.5 rounded-full bg-accent" />
         <span className="h-1.5 w-1.5 rounded-full bg-paper/30" />
         <span className="h-1.5 w-1.5 rounded-full bg-paper/30" />
-        <span className="ml-2 font-mono text-[8px] uppercase tracking-[0.2em] text-paper/40">
+        <span className="ml-2 font-mono text-[8px] uppercase tracking-[0.2em] text-paper/70">
           {term.title}
         </span>
       </div>
@@ -81,7 +84,7 @@ const TerminalThumb: React.FC<{ id: string }> = ({ id }) => {
                 : l.c === "ok"
                   ? "text-accent"
                   : l.c === "dim"
-                    ? "text-paper/35"
+                    ? "text-paper/70"
                     : "text-paper/55"
             }
           >
@@ -158,17 +161,26 @@ const Thumb: React.FC<{ index: number; project: Project }> = ({ index, project }
           {initials}
         </span>
       )}
-      <span className="absolute top-2 left-3 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/50 mix-blend-difference">
+      <span aria-hidden="true" className="absolute top-2 left-3 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/70 mix-blend-difference">
         {String(index + 2).padStart(2, "0")} — Preview
       </span>
     </div>
   );
 };
 
-const Feature: React.FC<{ project: Project }> = ({ project }) => (
+const Feature: React.FC<{ project: Project }> = ({ project }) => {
+  const imgRef = useRef<HTMLAnchorElement>(null);
+  const { reduceMotion: reduce } = useMotionPreference();
+  const { scrollYProgress } = useScroll({
+    target: imgRef,
+    offset: ["start end", "end start"],
+  });
+  const imgY = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1.08, 1.02]);
+  return (
   <Reveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 pb-14 md:pb-20 border-b border-line">
     <div className="lg:col-span-7">
-      <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent">Featured</span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent-deep">Featured</span>
       <h3 className="mt-4 font-display font-bold uppercase leading-[0.95] tracking-tight text-3xl sm:text-5xl xl:text-6xl">
         {project.title}
       </h3>
@@ -213,6 +225,7 @@ const Feature: React.FC<{ project: Project }> = ({ project }) => (
     </div>
     {project.image && (
       <a
+        ref={imgRef}
         href={project.liveUrl || project.githubUrl}
         target="_blank"
         rel="noreferrer"
@@ -220,19 +233,79 @@ const Feature: React.FC<{ project: Project }> = ({ project }) => (
         aria-label={`Open ${project.title}`}
         className="group relative col-span-full block overflow-hidden rounded-sm border border-line bg-ink"
       >
-        <img
+        <motion.img
           src={project.image}
           alt={`${project.title} — live interface`}
           loading="lazy"
           decoding="async"
-          className="aspect-[21/9] w-full object-cover object-top transition-transform duration-700 ease-out will-change-transform group-hover:scale-[1.02]"
+          style={reduce ? undefined : { y: imgY, scale: imgScale }}
+          className="aspect-[21/9] w-full object-cover object-top will-change-transform"
         />
-        <span className="absolute bottom-3 right-4 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/70 mix-blend-difference">
+        <span aria-hidden="true" className="absolute bottom-3 right-4 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/70 mix-blend-difference">
           Live capture — {new Date().getFullYear()}
         </span>
       </a>
     )}
   </Reveal>
+  );
+};
+
+const WorkStrip: React.FC = () => (
+  <div className="mt-10 mb-2">
+    <div className="mb-4 flex items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+      <span>Index gallery — scroll / swipe</span>
+      <span className="hidden sm:inline">(07)</span>
+    </div>
+    <div
+      data-cursor="Scroll"
+      className="scrollbar-none -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 md:-mx-10 md:px-10"
+    >
+      {projects.map((p, i) => (
+        <a
+          key={p.id}
+          href={p.liveUrl && p.liveUrl !== "#" ? p.liveUrl : p.githubUrl}
+          target="_blank"
+          rel="noreferrer"
+          data-cursor="View"
+          aria-label={`Open ${p.title}`}
+          className="group w-[78vw] sm:w-[46vw] lg:w-[30vw] shrink-0 snap-start overflow-hidden rounded-sm border border-line bg-paper transition-colors duration-300 hover:bg-ink hover:text-paper"
+        >
+          <span className="block overflow-hidden">
+            {p.image ? (
+              <img
+                src={p.image}
+                alt=""
+                aria-hidden
+                loading="lazy"
+                decoding="async"
+                className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+              />
+            ) : (
+              <span className="block aspect-[16/10] w-full overflow-hidden bg-ink text-paper">
+                {TERMINALS[p.id] ? (
+                  <TerminalThumb id={p.id} />
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center font-display font-extrabold uppercase text-5xl">
+                    {p.title
+                      .split(" ")
+                      .slice(0, 2)
+                      .map((w) => w[0])
+                      .join("")}
+                  </span>
+                )}
+              </span>
+            )}
+          </span>
+          <span className="flex items-center justify-between gap-3 px-4 py-3">
+            <span className="truncate font-display font-bold uppercase tracking-tight text-sm md:text-base">
+              {String(i + 1).padStart(2, "0")} — {p.title}
+            </span>
+            <ArrowUpRight size={16} className="shrink-0 text-muted transition-colors group-hover:text-accent" />
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
 );
 
 const Row: React.FC<{
@@ -252,18 +325,18 @@ const Row: React.FC<{
       onMouseLeave={onLeave}
       className="group grid grid-cols-[2.5rem_1fr_auto] md:grid-cols-[4rem_1fr_16rem_2.5rem] items-center gap-x-3 md:gap-x-6 border-b border-line py-6 md:py-8 -mx-3 px-3 md:-mx-5 md:px-5 transition-colors duration-300 hover:bg-ink hover:text-paper"
     >
-      <span className="font-mono text-xs text-muted group-hover:text-paper/50 transition-colors duration-300">
+      <span className="font-mono text-xs text-muted group-hover:text-paper/70 transition-colors duration-300">
         {num}
       </span>
       <span className="min-w-0">
         <span className="block font-display font-bold uppercase tracking-tight leading-tight text-lg md:text-2xl xl:text-3xl transition-transform duration-500 ease-out group-hover:translate-x-2">
           {project.title}
         </span>
-        <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.15em] text-muted group-hover:text-paper/50 transition-colors duration-300 md:hidden">
+        <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.15em] text-muted group-hover:text-paper/70 transition-colors duration-300 md:hidden">
           {project.stack.slice(0, 3).join(" / ")}
         </span>
       </span>
-      <span className="hidden md:block font-mono text-[11px] uppercase tracking-[0.12em] text-muted group-hover:text-paper/50 transition-colors duration-300 truncate">
+      <span className="hidden md:block font-mono text-[11px] uppercase tracking-[0.12em] text-muted group-hover:text-paper/70 transition-colors duration-300 truncate">
         {project.stack.slice(0, 4).join(" / ")}
       </span>
       <ArrowUpRight
@@ -293,6 +366,9 @@ const Work: React.FC = () => {
     <section id="work" className="px-5 md:px-10 py-24 md:py-36 relative">
       <SectionHead num="01" label="Selected Work" meta={`(${String(projects.length).padStart(2, "0")})`} />
       <Feature project={featured} />
+      <Reveal>
+        <WorkStrip />
+      </Reveal>
       <div className="mt-2" onMouseMove={fine ? onMove : undefined}>
         {rest.map((project, i) => (
           <Reveal key={project.id} delay={i * 0.04}>

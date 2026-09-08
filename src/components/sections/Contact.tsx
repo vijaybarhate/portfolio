@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import Reveal from "../layout/Reveal";
 import Magnetic from "../layout/Magnetic";
+import { useMotionPreference } from "../layout/MotionContext";
 
 const socials = [
   { name: "GitHub", href: "https://github.com/vijaybarhate" },
@@ -19,6 +20,15 @@ const maskLine = {
 
 const Contact: React.FC = () => {
   const [time, setTime] = useState("");
+  const ref = useRef<HTMLElement>(null);
+  const { reduceMotion: reduce, mode: motionMode, cycleMode } = useMotionPreference();
+  // Inversion lerp: paper → ink ease as footer enters (smooth cut, not hard)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 0.9", "start 0.35"],
+  });
+  const headlineX = useTransform(scrollYProgress, [0, 1], [48, 0]);
+  const glowOpacity = useTransform(scrollYProgress, [0.4, 1], [0, 0.9]);
 
   useEffect(() => {
     const tick = () =>
@@ -35,14 +45,20 @@ const Contact: React.FC = () => {
   }, []);
 
   return (
-    <footer id="contact" className="bg-ink text-paper">
-      <div className="px-5 md:px-10 pt-24 md:pt-36 pb-8">
+    <footer id="contact" ref={ref} className="relative overflow-hidden bg-ink text-paper">
+      {/* Inversion glow — decorative, scroll-driven */}
+      <motion.div
+        aria-hidden
+        style={reduce ? { opacity: 0 } : { opacity: glowOpacity }}
+        className="pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-accent/15 blur-[120px]"
+      />
+      <div className="relative px-5 md:px-10 pt-24 md:pt-36 pb-8">
         <Reveal>
           <div className="flex items-baseline justify-between gap-4 border-b border-paper/15 pb-4 mb-12 md:mb-20">
             <h2 className="font-mono text-xs md:text-sm uppercase tracking-[0.18em]">
               <span className="text-accent mr-3">05</span>Contact
             </h2>
-            <span className="font-mono text-[10px] md:text-xs uppercase tracking-[0.18em] text-paper/40 whitespace-nowrap">
+            <span className="font-mono text-[10px] md:text-xs uppercase tracking-[0.18em] text-paper/70 whitespace-nowrap">
               (Say hello)
             </span>
           </div>
@@ -53,7 +69,8 @@ const Contact: React.FC = () => {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-80px" }}
-            className="font-display font-extrabold uppercase leading-[0.9] tracking-tight text-[clamp(1.5rem,8vw,8rem)] max-w-none"
+            style={reduce ? undefined : { x: headlineX }}
+            className="font-display font-extrabold uppercase leading-[0.9] tracking-tight text-[clamp(1.5rem,8vw,8rem)] max-w-none will-change-transform"
           >
             <span className="block overflow-hidden pb-[0.06em] -mb-[0.06em]">
               <motion.span variants={maskLine} custom={0} className="block">
@@ -72,15 +89,19 @@ const Contact: React.FC = () => {
 
           <div className="mt-10 md:mt-0 lg:absolute lg:right-10 lg:top-1/2 lg:-translate-y-1/2 hidden sm:block">
             <Magnetic strength={0.4}>
-              <a
-                href="mailto:barhatevinay7777@gmail.com"
-                data-cursor="Go"
-                aria-label="Send an email"
-                className="flex h-32 w-32 md:h-40 md:w-40 flex-col items-center justify-center gap-1 rounded-full bg-accent text-paper font-mono text-[10px] uppercase tracking-[0.25em] transition-transform duration-300 hover:scale-105"
-              >
-                Say hello
-                <ArrowUpRight size={18} />
-              </a>
+              <span className="relative block">
+                <span aria-hidden className={`absolute inset-0 rounded-full bg-accent/40 blur-2xl ${reduce ? "hidden" : ""}`} />
+                <span aria-hidden className={`absolute -inset-3 rounded-full border border-accent/40 ${reduce ? "hidden" : ""}`} />
+                <a
+                  href="mailto:barhatevinay7777@gmail.com"
+                  data-cursor="Go"
+                  aria-label="Say hello — send an email"
+                  className="relative flex h-32 w-32 md:h-40 md:w-40 flex-col items-center justify-center gap-1 rounded-full bg-accent text-paper font-mono text-[10px] uppercase tracking-[0.25em] transition-transform duration-300 hover:scale-105"
+                >
+                  Say hello
+                  <ArrowUpRight size={18} />
+                </a>
+              </span>
             </Magnetic>
           </div>
         </div>
@@ -98,7 +119,7 @@ const Contact: React.FC = () => {
               href="/portfolio/resume/vijay_resume.pdf"
               download="Vijay_Barhate_Resume.pdf"
               data-cursor="Save"
-              className="link-sweep inline-flex items-center gap-2 font-mono text-sm md:text-base uppercase tracking-[0.12em] text-paper/60 hover:text-paper"
+              className="link-sweep inline-flex items-center gap-2 font-mono text-sm md:text-base uppercase tracking-[0.12em] text-paper/70 hover:text-paper"
             >
               Download resume <ArrowUpRight size={16} />
             </a>
@@ -113,28 +134,38 @@ const Contact: React.FC = () => {
                 href={social.href}
                 target="_blank"
                 rel="noreferrer"
-                className="link-sweep font-mono text-[11px] uppercase tracking-[0.18em] text-paper/60 hover:text-paper"
+                className="link-sweep font-mono text-[11px] uppercase tracking-[0.18em] text-paper/70 hover:text-paper"
               >
                 {social.name}
               </a>
             ))}
           </div>
 
-          <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.15em] text-paper/40">
+          <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.15em] text-paper/70">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+              <span className={`absolute inline-flex h-full w-full rounded-full bg-accent opacity-60 ${reduce ? "" : "animate-ping"}`} />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
             </span>
             Available for work
           </div>
 
-          <div className="flex items-center gap-6 md:gap-8 font-mono text-[11px] uppercase tracking-[0.15em] text-paper/40">
+          <div className="flex items-center gap-6 md:gap-8 font-mono text-[11px] uppercase tracking-[0.15em] text-paper/70">
+            <button
+              type="button"
+              onClick={cycleMode}
+              data-cursor="Motion"
+              aria-label={`Motion: ${motionMode} — activate to cycle motion preference`}
+              title="Cycle motion preference (full → calm → auto)"
+              className="uppercase tracking-[0.15em] text-paper/70 hover:text-accent transition-colors duration-300"
+            >
+              Motion: {motionMode}
+            </button>
             <span className="tabular-nums">IST {time}</span>
             <span>© 2026 VB</span>
             <Magnetic strength={0.45}>
               <button
                 type="button"
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                onClick={() => window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" })}
                 aria-label="Back to top"
                 data-cursor="Top"
                 className="p-2 -m-2 border border-paper/20 hover:border-accent hover:text-accent transition-colors duration-300"

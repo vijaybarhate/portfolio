@@ -1,17 +1,43 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
+import type { MotionValue } from "framer-motion";
 
 const COLS = 130;
 const ROWS = 70;
 const WIDTH = 30;
 const DEPTH = 16;
 
-const HeroField: React.FC = () => {
+// Camera dive rig (Sprint 2): hero scroll 0→1 pushes camera in + down
+const CAM_BASE = { y: 3.4, z: 8.2, lookY: -0.4 };
+const CAM_DIVE = { y: 2.5, z: 6.6, lookY: -0.9 };
+
+const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+interface HeroFieldProps {
+  /** Hero section scrollYProgress (0 at top → 1 scrolled away). Drives dive + wave energy. */
+  scrollProgress?: MotionValue<number>;
+  /**
+   * Effective reduced-motion flag (OS preference + user override).
+   * Falls back to matchMedia when omitted (e.g. outside the provider).
+   */
+  reducedMotion?: boolean;
+}
+
+const HeroField: React.FC<HeroFieldProps> = ({ scrollProgress, reducedMotion }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const progressRef = useRef(scrollProgress);
+
+  useEffect(() => {
+    progressRef.current = scrollProgress;
+  }, [scrollProgress]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const reduceMotion =
+      reducedMotion ?? window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const dprCap = () => (window.innerWidth < 768 ? 1 : 2);
 
     let renderer: THREE.WebGLRenderer;
     try {
@@ -19,7 +45,7 @@ const HeroField: React.FC = () => {
     } catch {
       return;
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, dprCap()));
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
@@ -47,6 +73,7 @@ const HeroField: React.FC = () => {
     const uniforms = {
       uTime: { value: 0 },
       uMouse: { value: new THREE.Vector2(99, 99) },
+      uScroll: { value: 0 },
     };
 
     const mat = new THREE.ShaderMaterial({
@@ -56,23 +83,25 @@ const HeroField: React.FC = () => {
       vertexShader: `
         uniform float uTime;
         uniform vec2 uMouse;
+        uniform float uScroll;
         attribute float aAccent;
         varying float vAlpha;
         varying float vAccent;
         void main() {
           vec3 p = position;
+          float amp = 1.0 + uScroll * 0.55;
           float w =
             sin(p.x * 0.55 + uTime * 0.9) * 0.34 +
             cos(p.z * 0.62 + uTime * 0.7) * 0.42 +
             sin((p.x + p.z) * 0.28 + uTime * 0.45) * 0.5;
-          p.y += w;
+          p.y += w * amp;
           float d = distance(p.xz, uMouse);
           float m = smoothstep(3.4, 0.0, d);
-          p.y += m * 1.25;
-          vAlpha = 0.22 + 0.7 * smoothstep(-1.3, 1.1, w) + m * 0.3;
+          p.y += m * (1.25 + uScroll * 0.6);
+          vAlpha = 0.22 + 0.7 * smoothstep(-1.3, 1.1, w) + m * 0.3 + uScroll * 0.06;
           vAccent = aAccent;
           vec4 mv = modelViewMatrix * vec4(p, 1.0);
-          gl_PointSize = (1.7 + m * 2.6) * (26.0 / -mv.z);
+          gl_PointSize = (1.7 + m * 2.6 + uScroll * 0.5) * (26.0 / -mv.z);
           gl_Position = projectionMatrix * mv;
         }
       `,
@@ -98,6 +127,48 @@ const HeroField: React.FC = () => {
     const ndc = new THREE.Vector2(99, 99);
     const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
     const hit = new THREE.Vector3();
+    const scrollVal = { current: 0 };
+
+    const readScroll = () => {
+      try {
+        const mv = progressRef.current;
+        scrollVal.current = mv ? clamp01(mv.get()) : 0;
+      } catch {
+        scrollVal.current = 0;
+      }
+    };
+    let visible = true;
+    let dirty = false;
+
+    const applyCamera = () => {
+      const s = scrollVal.current;
+      camera.position.set(
+        0,
+        CAM_BASE.y + (CAM_DIVE.y - CAM_BASE.y) * s,
+        CAM_BASE.z + (CAM_DIVE.z - CAM_BASE.z) * s
+      );
+      camera.lookAt(0, CAM_BASE.lookY + (CAM_DIVE.lookY - CAM_BASE.lookY) * s, -1);
+    };
+
+    const renderStatic = () => {
+      readScroll();
+      uniforms.uTime.value = 0.6;
+      uniforms.uScroll.value = scrollVal.current;
+      applyCamera();
+      renderer.render(scene, camera);
+    };
+
+    readScroll();
+    const unsubScroll = progressRef.current?.on?.("change", (v: number) => {
+      scrollVal.current = clamp01(typeof v === "number" ? v : 0);
+      // Reduced-motion: repaint the scroll-linked frame on user scroll.
+      // No autonomous animation — all changes are user-initiated.
+      if (reduceMotion) {
+        if (visible) renderStatic();
+        else dirty = true;
+      }
+    });
+    applyCamera();
 
     const onPointer = (e: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -105,8 +176,10 @@ const HeroField: React.FC = () => {
       ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
     };
     const onLeave = () => ndc.set(99, 99);
-    window.addEventListener("pointermove", onPointer, { passive: true });
-    document.documentElement.addEventListener("pointerleave", onLeave);
+    if (!reduceMotion) {
+      window.addEventListener("pointermove", onPointer, { passive: true });
+      document.documentElement.addEventListener("pointerleave", onLeave);
+    }
 
     const resize = () => {
       const parent = canvas.parentElement;
@@ -114,21 +187,56 @@ const HeroField: React.FC = () => {
       const w = parent.clientWidth;
       const h = parent.clientHeight;
       if (w === 0 || h === 0) return;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, dprCap()));
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
+      // A canvas resize clears the drawing buffer — repaint the static frame.
+      if (reduceMotion) {
+        if (visible) renderStatic();
+        else dirty = true;
+      }
     };
     resize();
     const ro = new ResizeObserver(resize);
     if (canvas.parentElement) ro.observe(canvas.parentElement);
 
+    // Pause GPU work when hero is offscreen
+    const io = new IntersectionObserver(
+      (entries) => {
+        visible = entries[0]?.isIntersecting ?? true;
+        if (visible && dirty) {
+          dirty = false;
+          if (reduceMotion) renderStatic();
+        }
+      },
+      { threshold: 0 }
+    );
+    if (canvas.parentElement) io.observe(canvas.parentElement);
+
     let raf = 0;
     const start = performance.now();
 
+    if (reduceMotion) {
+      // Scroll-linked static frames only — no loop, no pointer tracking.
+      // renderStatic runs via resize/scroll/IO callbacks above; paint once now.
+      renderStatic();
+      return () => {
+        ro.disconnect();
+        io.disconnect();
+        unsubScroll?.();
+        geo.dispose();
+        mat.dispose();
+        renderer.dispose();
+      };
+    }
+
     const frame = () => {
       raf = requestAnimationFrame(frame);
-      if (document.hidden) return;
+      if (!visible || document.hidden) return;
       uniforms.uTime.value = (performance.now() - start) / 1000;
+      uniforms.uScroll.value = scrollVal.current;
+      applyCamera();
       raycaster.setFromCamera(ndc, camera);
       if (raycaster.ray.intersectPlane(plane, hit)) {
         uniforms.uMouse.value.set(hit.x, hit.z);
@@ -141,13 +249,15 @@ const HeroField: React.FC = () => {
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      io.disconnect();
+      unsubScroll?.();
       window.removeEventListener("pointermove", onPointer);
       document.documentElement.removeEventListener("pointerleave", onLeave);
       geo.dispose();
       mat.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [reducedMotion]);
 
   return <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden />;
 };

@@ -11,8 +11,8 @@ const Capabilities: React.FC = () => (
       {skillCategories.map((category, i) => (
         <Reveal key={category.title} delay={i * 0.05}>
           <div className="group grid grid-cols-1 md:grid-cols-[14rem_1fr] gap-x-8 gap-y-3 border-b border-line py-6 md:py-8">
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted pt-1 group-hover:text-accent transition-colors duration-300">
-              <span className="text-accent mr-3">0{i + 1}</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted pt-1 group-hover:text-accent-deep transition-colors duration-300">
+              <span className="text-accent-deep mr-3">0{i + 1}</span>
               {category.title}
             </span>
             <p className="text-lg md:text-2xl font-medium leading-relaxed tracking-tight transition-transform duration-500 ease-out group-hover:translate-x-2">

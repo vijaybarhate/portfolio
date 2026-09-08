@@ -29,7 +29,7 @@ const Word: React.FC<{
 }> = ({ progress, range, accent, children }) => {
   const opacity = useTransform(progress, range, [0.12, 1]);
   return (
-    <motion.span style={{ opacity }} className={accent ? "text-accent" : undefined}>
+    <motion.span style={{ opacity }} className={accent ? "text-accent-deep" : undefined}>
       {children}{" "}
     </motion.span>
   );
@@ -69,7 +69,7 @@ const About: React.FC = () => (
             <br />
             Navi Mumbai, India
             <br />
-            <span className="text-accent">Open to internships</span>
+            <span className="text-accent-deep">Open to internships</span>
           </p>
         </Reveal>
       </div>

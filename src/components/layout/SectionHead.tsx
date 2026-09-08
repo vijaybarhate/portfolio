@@ -12,7 +12,7 @@ export const SectionHead: React.FC<SectionHeadProps> = ({ num, label, meta }) =>
   <Reveal>
     <div className="relative flex items-baseline justify-between gap-4 border-b border-line pb-4 mb-10 md:mb-16">
       <h2 className="font-mono text-xs md:text-sm uppercase tracking-[0.18em]">
-        <span className="text-accent mr-3">{num}</span>
+        <span className="text-accent-deep mr-3">{num}</span>
         {label}
       </h2>
       {meta && (

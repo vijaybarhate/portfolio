@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import MenuOverlay from "./MenuOverlay";
+import { useMotionPreference } from "./MotionContext";
 
 const links = [
   { name: "Work", href: "#work", num: "01" },
   { name: "About", href: "#about", num: "02" },
-  { name: "Contact", href: "#contact", num: "03" },
+  { name: "Contact", href: "#contact", num: "05" },
 ];
 
 const Header: React.FC = () => {
   const [time, setTime] = useState("");
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { reduceMotion } = useMotionPreference();
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (y) => {
@@ -50,7 +52,7 @@ const Header: React.FC = () => {
       >
         <div className="flex items-center justify-between px-5 md:px-10 h-14 md:h-16">
           <a href="#top" className="font-mono text-xs md:text-sm font-medium tracking-tight">
-            VB<span className="text-accent">.</span>
+            VB<span className="text-accent-deep">.</span>
             <span className="hidden sm:inline text-muted ml-3">Vijay Barhate</span>
           </a>
 
@@ -61,7 +63,7 @@ const Header: React.FC = () => {
                 href={link.href}
                 className="link-sweep font-mono text-[11px] md:text-xs uppercase tracking-[0.15em] text-ink/70 hover:text-ink"
               >
-                <span className="text-accent mr-1.5">{link.num}</span>
+                <span className="text-accent-deep mr-1.5">{link.num}</span>
                 {link.name}
               </a>
             ))}
@@ -70,7 +72,7 @@ const Header: React.FC = () => {
           <div className="flex items-center gap-5 md:gap-8">
             <div className="hidden lg:flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.12em]">
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+                <span className={`absolute inline-flex h-full w-full rounded-full bg-accent opacity-60 ${reduceMotion ? "" : "animate-ping"}`} />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
               </span>
               <span className="text-muted">IST</span>
