@@ -1,6 +1,6 @@
 # 🚀 Vijay Barhate | Interactive 3D Engineering Portfolio
 
-A modern, high-performance personal portfolio website built with **React**, **Three.js**, **GSAP**, and **Tailwind CSS**. This platform serves as a visual showcase of my engineering skills, featuring smooth 3D interactions, scroll-triggered animations, and optimized load footprints.
+A modern, high-performance personal portfolio website built with **React**, **Three.js**, **Framer Motion**, **Lenis**, and **Tailwind CSS**. This platform serves as a visual showcase of my engineering skills, featuring a custom WebGL shader field, scroll-driven camera motion, and optimized load footprints.
 
 ---
 
@@ -14,25 +14,28 @@ A modern, high-performance personal portfolio website built with **React**, **Th
 
 ## ✨ Key Features
 
-* **Interactive 3D Graphics**: Integrates a responsive 3D avatar / scene rendered in real-time using React Three Fiber.
-* **Cinematic Scroll Transitions**: Leverages GSAP ScrollTrigger to orchestrate smooth, hardware-accelerated animations synchronized with the browser scrollbar.
-* **Dynamic Projects Grid**: Renders projects dynamically from source configurations, linking directly to repositories and live deployments.
-* **PDF Resume Integration**: Contains a self-hosted LaTeX-compiled professional resume viewer.
-* **Performance Engineered**: Uses Draco compression on GLTF/GLB 3D models and modern WebP imagery to keep page loading times under 2 seconds.
+* **Custom WebGL Shader Field**: A raw Three.js particle-wave hero field (`src/components/three/HeroField.tsx`) with pointer-reactive GLSL shaders and a scroll-driven camera dive rig — no 3D framework overhead.
+* **Scroll-Driven Motion**: Framer Motion `MotionValue` scroll progress drives the WebGL camera/uniforms, with Lenis smooth scrolling (auto-disabled under reduced-motion / Calm mode).
+* **Dynamic Projects Grid**: Renders projects dynamically from `src/data/projects.ts`, linking directly to repositories and live deployments.
+* **PDF Resume Integration**: Self-hosted resume PDFs served from `public/resume/` (including a LaTeX source `vijay_resume.tex`).
+* **Performance Engineered**: Lazy-loaded WebGL (`WebGLScrollRig` suspense boundary), GPU work paused offscreen via `IntersectionObserver`, DPR capped (1 on mobile / 2 on desktop), self-hosted fonts via `@fontsource` with `font-display:swap`.
 * **Tailwind Fluid Layouts**: Fully responsive grid systems optimized across mobile, tablet, and ultra-wide desktop monitors.
 
 ---
 
 ## 🧰 Tech Stack
 
+<!-- AUTO-GENERATED:START (tech-stack from package.json — do not edit manually, run doc sync) -->
 | Category | Technology | Usage |
 | :--- | :--- | :--- |
-| **Frontend Core** | React 18 + Vite | Modular UI components & fast HMR development |
-| **Language** | TypeScript | Strong typing & interface safety |
-| **3D Rendering** | Three.js + @react-three/fiber | Canvas management and asset loaders |
-| **3D Utilities** | @react-three/drei | Camera controls, lighting presets, & Draco loader |
-| **Animations** | GSAP + Framer Motion | ScrollTrigger camera motions & UI transitions |
-| **Styling** | Tailwind CSS | Utility-first clean typography and sizing |
+| **Frontend Core** | React 18 + Vite 8 (`@vitejs/plugin-react` 5) | Modular UI components & fast HMR development |
+| **Language** | TypeScript 5.5 | Strong typing & interface safety |
+| **3D Rendering** | Three.js (raw `WebGLRenderer` + `ShaderMaterial`) | Custom particle-wave hero field, no R3F/Drei wrapper |
+| **Motion** | Framer Motion 12 + Lenis 1.3 | Scroll-linked reveals, camera dive rig, smooth scrolling |
+| **Styling** | Tailwind CSS 4 (via `@tailwindcss/postcss`) | Utility-first clean typography and sizing |
+| **Icons** | lucide-react | Single icon family (`strokeWidth 1.5`) |
+| **Fonts** | @fontsource (Syne 700/800, Instrument Sans 400–600, JetBrains Mono 400/500) | Self-hosted woff2, `font-display:swap` |
+<!-- AUTO-GENERATED:END -->
 
 ---
 
@@ -40,38 +43,51 @@ A modern, high-performance personal portfolio website built with **React**, **Th
 
 The portfolio utilizes a layered UI-Canvas layout, separating interactive HTML elements from the WebGL rendering context:
 
+<!-- AUTO-GENERATED:START (architecture from src/components/three/HeroField.tsx, src/components/three/WebGLScrollRig.tsx, src/App.tsx — do not edit manually) -->
 ```mermaid
 graph TD
-    User([User Screen]) --> Scroll[Scroll Listener]
-    
+    User([User Screen]) --> Scroll[Scroll + Pointer Input]
+
     subgraph dom["Browser DOM Layout"]
-        Scroll --> GSAP["GSAP ScrollTrigger (Animation Driver)"]
-        GSAP --> CanvasTransform["Camera Translation / Rotation"]
-        
-        subgraph webgl["WebGL Context (R3F Layer)"]
-            CanvasTransform --> Camera["Perspective Camera Controller"]
-            Camera --> Scene["3D Canvas Scene"]
-            Scene --> Avatar["Draco Compressed GLB Model"]
+        Scroll --> Lenis["Lenis Smooth Scroll (disabled when reduced-motion)"]
+        Scroll --> FM["Framer Motion scrollYProgress (MotionValue)"]
+
+        subgraph webgl["WebGL Canvas (raw Three.js, no R3F)"]
+            FM --> Rig["WebGLScrollRig (lazy + Suspense + error boundary)"]
+            Rig --> Field["HeroField: Points + ShaderMaterial wave grid"]
+            Field --> Camera["Perspective Camera dive rig (base -> dive on scroll)"]
         end
-        
+
         subgraph html["HTML DOM Layer (React Overlay)"]
-            Scene -.-> Overlay["Text Panels & Responsive Project Cards"]
+            Field -.-> Overlay["Text Panels & Responsive Project Cards"]
         end
     end
 ```
 
 ### Architectural Breakdown
-* **Layer Separation**: The 3D Canvas is locked in the background (`fixed inset-0 z-0`), while the standard HTML sections scroll on top (`relative z-10`), ensuring clean touch events and interaction.
-* **GSAP Scroll Driver**: Instead of frame-based updates, camera angles and lighting properties are interpolated based on scroll-offsets, generating smooth transitions.
-* **Draco Mesh Compression**: The 3D avatar is parsed through a WASM decoder script, reducing raw file size by over 70% and accelerating GPU upload.
+* **Layer Separation**: The WebGL canvas fills its absolute parent behind the content, while standard HTML sections scroll on top, ensuring clean touch events and interaction.
+* **Scroll-Driven Camera**: Hero `scrollYProgress` (a Framer Motion `MotionValue`) drives camera position/lookAt interpolation plus wave-energy uniforms — repaint-only under reduced-motion, no autonomous loop.
+* **Custom Shader Field**: A `THREE.Points` grid (130×70) with vertex/fragment GLSL (wave displacement, pointer lift, ink/accent coloring). GPU work pauses offscreen (`IntersectionObserver` + `document.hidden` guard); DPR capped at 1 (mobile) / 2 (desktop).
+* **Motion Safety**: `MotionContext` + `MotionConfig reducedMotion` act as a global kill-switch; Lenis is torn down when reduced motion is active.
+<!-- AUTO-GENERATED:END -->
 
 ---
 
 ## 📦 How to Run
 
+<!-- AUTO-GENERATED:START (scripts from package.json, deploy from .github/workflows/deploy.yml, base from vite.config.ts — do not edit manually) -->
 ### Prerequisites
-* **Node.js** v20 or newer
-* **npm** or **yarn**
+* **Node.js** v20 or newer (CI uses Node 20, `npm ci`)
+* **npm**
+
+### Available Scripts
+
+| Command | Source | Description |
+|---------|--------|-------------|
+| `npm run dev` | `vite --host` | Start development server with hot reload (LAN-accessible). Open `http://localhost:5173/portfolio/` |
+| `npm run build` | `tsc -b && vite build` | Type-check then production build. Output to `dist/` |
+| `npm run preview` | `vite preview` | Preview the production build locally |
+| `npm run lint` | `eslint .` | Lint all TS/TSX (excludes `dist/`) |
 
 ### Installation Steps
 
@@ -90,14 +106,17 @@ graph TD
    ```bash
    npm run dev
    ```
-   Open `http://localhost:5173` in your browser.
+   Open `http://localhost:5173/portfolio/` in your browser (note the `/portfolio/` base path from `vite.config.ts`).
 
-4. **Production Build Compilation**
-   To test optimized assets compression and compile production bundles:
+4. **Production Build**
    ```bash
    npm run build
    ```
    *Output files will be generated under the `dist/` directory.*
+
+### Deployment
+Pushes to `master` trigger `.github/workflows/deploy.yml`: `npm ci` → `npm run build` → upload `dist/` → GitHub Pages. Live at `https://vijaybarhate.github.io/portfolio/`. No environment variables required (no `.env` — static site).
+<!-- AUTO-GENERATED:END -->
 
 ---
 
